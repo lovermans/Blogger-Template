@@ -1668,7 +1668,7 @@
             border-radius: 0.5em;
             max-width: 100%;
             overflow: auto;
-            max-height: 75dvh;
+            /* max-height: 75dvh; */
 
             table {
               min-width: 100%;
@@ -4450,3 +4450,4 @@
     </body>
   </b:with>
 </html>
+
