@@ -1185,6 +1185,11 @@
 
           #main {
             margin-bottom: 1rem;
+
+			iframe.content {
+              width: 100%;
+              aspect-ratio: 16/9;
+            }
           }
 
           .author, .reply-avatar {
@@ -4450,4 +4455,5 @@
     </body>
   </b:with>
 </html>
+
 
