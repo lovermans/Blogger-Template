@@ -2769,8 +2769,8 @@
                   <b:with value='data:comment-avatar ?: &quot;https://1.bp.blogspot.com/-XBvpDLx2IL4/AAAAAAAAAAI/AAAAAAAAAS8/yNvDEYNszDk/s40/photo.jpg&quot;' var='comment-avatar'>
                     <b:with value='data:post.comments filter (x =&gt; x.inReplyTo == &quot;&quot;)' var='mainComments'>
                       <b:with value='data:mainComments skip (data:mainComments.length gt 50 ? data:mainComments.length - 50 : 0)' var='topComments'>
-                        <b:if cond='data:topComments.length &gt; 0'>
-                          <div class='card' id='comments'>
+                        <div class='card' id='comments'>
+                          <b:if cond='data:topComments.length &gt; 0'>
                             <details expr:data-postId='data:post.id' open='open'>
                               <summary>
                                 <span class='title open'>Sembunyikan <data:topComments.length/> komentar terbaru</span>
@@ -2841,11 +2841,11 @@
                                 </b:loop>
                               </div>
                             </details>
-                            <div class='comment-action'>
-                              <a class='contained-button' expr:href='data:post.commentFormIframeSrc' rel='noopener'>Tambahkan Komentar</a>
-                            </div>
+                          </b:if>
+                          <div class='comment-action'>
+                            <a class='contained-button' expr:href='data:post.commentFormIframeSrc' rel='noopener'>Tambahkan Komentar</a>
                           </div>
-                        </b:if>
+                        </div>
                       </b:with>
                     </b:with>
                   </b:with>
