@@ -1187,6 +1187,11 @@
             margin-bottom: 1rem;
           }
 
+          #reply-form {
+            border: var(--divider-border);
+            border-radius: 0.25rem;
+          }
+
           .author, .reply-avatar {
             a {
               font-weight: 500;
@@ -1347,6 +1352,31 @@
             iframe.content {
               width: 100%;
               aspect-ratio: 16/9;
+              border: none;
+            }
+
+            a[title]:has(>img) {
+              display: inline-flex;
+              flex-direction: column;
+              max-width: 100%;
+              border: var(--divider-border);
+              border-radius: 0.5rem;
+
+              img {
+                border-radius: 0.5rem 0.5rem 0 0;
+              }
+
+              &::after {
+                content: attr(title);
+                padding: 0.5rem 1rem;
+                background: var(--activated-solid);
+                font: var(--font-caption);
+                letter-spacing: var(--ls-caption);
+                line-height: var(--lh-proper);
+                font-style: italic;
+                color: var(--clr-active);
+                border-radius: 0 0 0.5rem 0.5rem;
+              }
             }
           }
 
@@ -4231,11 +4261,11 @@
         };
 
         function adjustFormHeight(event) {
-          if (event.origin !== 'https://www.blogger.com') {
-			return;
-          };
+          if (event.origin == 'https://www.blogger.com') {
+            var replyIframe = document.getElementById('reply-form');
 
-          document.getElementById('reply-form').height = event.data.substring(26);
+            if (replyIframe) {replyIframe.height = event.data.substring(26);};
+          };
         };
 
         showHideTopAppBarOnScroll(document.body, 500);
