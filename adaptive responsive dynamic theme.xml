@@ -1300,7 +1300,7 @@
             h2, h2 a {
               font-weight: 500;
               color: var(--clr-inactive);
-              margin: 0 0 -1rem;
+              /* margin: 0 0 -1rem; */
             }
 
             &>p {
@@ -4488,3 +4488,4 @@
     </body>
   </b:with>
 </html>
+
