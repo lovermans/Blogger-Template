@@ -160,7 +160,7 @@
         }
 
         /* vietnamese */
-        @font-face {
+        @font-face {a
           font-family: 'Roboto';
           font-style: italic;
           font-weight: 100 900;
@@ -1185,11 +1185,6 @@
 
           #main {
             margin-bottom: 1rem;
-
-			iframe.content {
-              width: 100%;
-              aspect-ratio: 16/9;
-            }
           }
 
           .author, .reply-avatar {
@@ -1347,6 +1342,11 @@
 
             .newest {
               color: var(--clr-accent);
+            }
+
+            iframe.content {
+              width: 100%;
+              aspect-ratio: 16/9;
             }
           }
 
@@ -4455,5 +4455,3 @@
     </body>
   </b:with>
 </html>
-
-
