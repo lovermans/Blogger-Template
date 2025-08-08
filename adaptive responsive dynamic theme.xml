@@ -2801,89 +2801,92 @@
                 <b:if cond='data:view.isPost'>
                   <div expr:data-source='data:blog.canonicalHomepageUrl + &quot;feeds/posts/summary/-/&quot; + data:post.labels.first.name + &quot;?alt=json-in-script&amp;max-results=8&amp;callback=getRelatedPosts&quot;' expr:data-url='data:blog.canonicalUrl' id='related-posts'/>
                   
-                  <b:with value='data:comment-avatar ?: &quot;https://1.bp.blogspot.com/-XBvpDLx2IL4/AAAAAAAAAAI/AAAAAAAAAS8/yNvDEYNszDk/s40/photo.jpg&quot;' var='comment-avatar'>
-                    <b:with value='data:post.comments filter (x =&gt; x.inReplyTo == &quot;&quot;)' var='mainComments'>
-                      <b:with value='data:mainComments skip (data:mainComments.length gt 50 ? data:mainComments.length - 50 : 0)' var='topComments'>
-                        <div class='card' id='comments'>
-                          <b:if cond='data:topComments.length &gt; 0'>
-                            <details expr:data-postId='data:post.id' open='open'>
-                              <summary>
-                                <span class='title open'>Sembunyikan <data:topComments.length/> komentar terbaru</span>
-                                <span class='title close'>Tampilkan <data:topComments.length/> komentar terbaru</span>
-                                <span class='line'/>
-                                <span class='icon'>
-                                  <svg aria-hidden='true' class='open' viewbox='0 0 24 24'>
-                                    <use expr:href='data:blog.homepageUrl.canonical + &quot;/responsive/sprite_v1_6.css.svg#ic_expand_less_black_24dp&quot;'/>
-                                  </svg>
-                                  <svg aria-hidden='true' class='close' viewbox='0 0 24 24'>
-                                    <use expr:href='data:blog.homepageUrl.canonical + &quot;/responsive/sprite_v1_6.css.svg#ic_expand_more_black_24dp&quot;'/>
-                                  </svg>
-                                </span>
-                              </summary>
-                              <div class='comments'>
-                                <b:loop reverse='true' values='data:topComments' var='parentComment'>
-                                  <div class='parrent-comment' expr:id='data:parentComment.anchorName'>
-                                    <a class='comment-avatar' expr:href='data:parentComment.authorUrl != &quot;&quot; ? data:parentComment.authorUrl : &quot;#&quot; + data:parentComment.anchorName' expr:title='data:parentComment.author' rel='nofollow'>
-                                      <img expr:alt='data:parentComment.author' expr:src='data:parentComment.authorPhoto.url ? resizeImage(data:parentComment.authorPhoto.url, 40, &quot;1:1&quot;) : data:comment-avatar' loading='lazy'/>
-                                    </a>
-                                    <div class='comment-block'>
-                                      <div class='comment-author'>
-                                        <a expr:href='data:parentComment.authorUrl != &quot;&quot; ? data:parentComment.authorUrl : &quot;#&quot; + data:parentComment.anchorName' rel='nofollow'><data:parentComment.author/></a>
-                                        <div class='comment-date'>
-                                          <data:parentComment.timestamp/>
+                  <b:if cond='data:post.allowComments'>
+                    <b:with value='data:comment-avatar ?: &quot;https://1.bp.blogspot.com/-XBvpDLx2IL4/AAAAAAAAAAI/AAAAAAAAAS8/yNvDEYNszDk/s40/photo.jpg&quot;' var='comment-avatar'>
+                      <b:with value='data:post.comments filter (x =&gt; x.inReplyTo == &quot;&quot;)' var='mainComments'>
+                        <b:with value='data:mainComments skip (data:mainComments.length gt 50 ? data:mainComments.length - 50 : 0)' var='topComments'>
+                          <div class='card' id='comments'>
+                            <b:if cond='data:topComments.length &gt; 0'>
+                              <details expr:data-postId='data:post.id' open='open'>
+                                <summary>
+                                  <span class='title open'>Sembunyikan <data:topComments.length/> komentar terbaru</span>
+                                  <span class='title close'>Tampilkan <data:topComments.length/> komentar terbaru</span>
+                                  <span class='line'/>
+                                  <span class='icon'>
+                                    <svg aria-hidden='true' class='open' viewbox='0 0 24 24'>
+                                      <use expr:href='data:blog.homepageUrl.canonical + &quot;/responsive/sprite_v1_6.css.svg#ic_expand_less_black_24dp&quot;'/>
+                                    </svg>
+                                    <svg aria-hidden='true' class='close' viewbox='0 0 24 24'>
+                                      <use expr:href='data:blog.homepageUrl.canonical + &quot;/responsive/sprite_v1_6.css.svg#ic_expand_more_black_24dp&quot;'/>
+                                    </svg>
+                                  </span>
+                                </summary>
+                                <div class='comments'>
+                                  <b:loop reverse='true' values='data:topComments' var='parentComment'>
+                                    <div class='parrent-comment' expr:id='data:parentComment.anchorName'>
+                                      <a class='comment-avatar' expr:href='data:parentComment.authorUrl != &quot;&quot; ? data:parentComment.authorUrl : &quot;#&quot; + data:parentComment.anchorName' expr:title='data:parentComment.author' rel='nofollow'>
+                                        <img expr:alt='data:parentComment.author' expr:src='data:parentComment.authorPhoto.url ? resizeImage(data:parentComment.authorPhoto.url, 40, &quot;1:1&quot;) : data:comment-avatar' loading='lazy'/>
+                                      </a>
+                                      <div class='comment-block'>
+                                        <div class='comment-author'>
+                                          <a expr:href='data:parentComment.authorUrl != &quot;&quot; ? data:parentComment.authorUrl : &quot;#&quot; + data:parentComment.anchorName' rel='nofollow'><data:parentComment.author/></a>
+                                          <div class='comment-date'>
+                                            <data:parentComment.timestamp/>
+                                          </div>
+                                        </div>
+                                        <div class='comment-body'>
+                                          <data:parentComment.body/>
+                                        </div>
+                                        <b:with value='data:post.comments filter (y =&gt; y.inReplyTo == data:parentComment.id)' var='subComments'>
+                                          <b:if cond='data:subComments.length &gt; 0'>
+                                            <details class='child-comment-title' open='open'>
+                                              <summary>
+                                                <span class='title open'>Sembunyikan <data:subComments.length/> balasan</span>
+                                                <span class='title close'>Tampilkan <data:subComments.length/> balasan</span>
+                                                <span class='line'/>
+                                                <span class='icon'>
+                                                  <svg aria-hidden='true' class='open' viewbox='0 0 24 24'>
+                                                    <use expr:href='data:blog.homepageUrl.canonical + &quot;/responsive/sprite_v1_6.css.svg#ic_expand_less_black_24dp&quot;'/>
+                                                  </svg>
+                                                  <svg aria-hidden='true' class='close' viewbox='0 0 24 24'>
+                                                    <use expr:href='data:blog.homepageUrl.canonical + &quot;/responsive/sprite_v1_6.css.svg#ic_expand_more_black_24dp&quot;'/>
+                                                  </svg>
+                                                </span>
+                                              </summary>
+                                              <div class='comments'>
+                                                <b:loop values='data:subComments' var='childComment'>
+                                                  <div class='child-comment' expr:id='data:childComment.anchorName'>
+                                                    <div class='reply-avatar'>
+                                                      <a expr:href='data:childComment.authorUrl != &quot;&quot; ? data:childComment.authorUrl : &quot;#&quot; + data:childComment.anchorName' expr:title='data:childComment.author' rel='nofollow'>
+                                                        <img alt='' expr:src='data:childComment.authorPhoto.url ? resizeImage(data:childComment.authorPhoto.url, 40, &quot;1:1&quot;) : data:comment-avatar' loading='lazy'/><data:childComment.author/>
+                                                      </a>
+                                                      <div class='reply-date'><data:childComment.timestamp/></div>
+                                                    </div>
+                                                    <div class='reply-body'><data:childComment.body/></div>
+                                                  </div>
+                                                </b:loop>
+                                              </div>
+                                            </details>
+                                          </b:if>
+                                        </b:with>
+                                        <div class='comment-action'>
+                                          <a class='text-button' expr:href='params(data:post.commentFormIframeSrc, {parentID: data:parentComment.id})' rel='noopener'>Balas</a>
                                         </div>
                                       </div>
-                                      <div class='comment-body'>
-                                        <data:parentComment.body/>
-                                      </div>
-                                      <b:with value='data:post.comments filter (y =&gt; y.inReplyTo == data:parentComment.id)' var='subComments'>
-                                        <b:if cond='data:subComments.length &gt; 0'>
-                                          <details class='child-comment-title' open='open'>
-                                            <summary>
-                                              <span class='title open'>Sembunyikan <data:subComments.length/> balasan</span>
-                                              <span class='title close'>Tampilkan <data:subComments.length/> balasan</span>
-                                              <span class='line'/>
-                                              <span class='icon'>
-                                                <svg aria-hidden='true' class='open' viewbox='0 0 24 24'>
-                                                  <use expr:href='data:blog.homepageUrl.canonical + &quot;/responsive/sprite_v1_6.css.svg#ic_expand_less_black_24dp&quot;'/>
-                                                </svg>
-                                                <svg aria-hidden='true' class='close' viewbox='0 0 24 24'>
-                                                  <use expr:href='data:blog.homepageUrl.canonical + &quot;/responsive/sprite_v1_6.css.svg#ic_expand_more_black_24dp&quot;'/>
-                                                </svg>
-                                              </span>
-                                            </summary>
-                                            <div class='comments'>
-                                              <b:loop values='data:subComments' var='childComment'>
-                                                <div class='child-comment' expr:id='data:childComment.anchorName'>
-                                                  <div class='reply-avatar'>
-                                                    <a expr:href='data:childComment.authorUrl != &quot;&quot; ? data:childComment.authorUrl : &quot;#&quot; + data:childComment.anchorName' expr:title='data:childComment.author' rel='nofollow'>
-                                                      <img alt='' expr:src='data:childComment.authorPhoto.url ? resizeImage(data:childComment.authorPhoto.url, 40, &quot;1:1&quot;) : data:comment-avatar' loading='lazy'/><data:childComment.author/>
-                                                    </a>
-                                                    <div class='reply-date'><data:childComment.timestamp/></div>
-                                                  </div>
-                                                  <div class='reply-body'><data:childComment.body/></div>
-                                                </div>
-                                              </b:loop>
-                                            </div>
-                                          </details>
-                                        </b:if>
-                                      </b:with>
-                                      <div class='comment-action'>
-                                        <a class='text-button' expr:href='params(data:post.commentFormIframeSrc, {parentID: data:parentComment.id})' rel='noopener'>Balas</a>
-                                      </div>
                                     </div>
-                                  </div>
-                                </b:loop>
-                              </div>
-                            </details>
-                          </b:if>
-                          <div class='comment-action'>
-                            <a class='contained-button' expr:href='data:post.commentFormIframeSrc' rel='noopener'>Tambahkan Komentar</a>
+                                  </b:loop>
+                                </div>
+                              </details>
+                            </b:if>
+                            <div class='comment-action'>
+                              <a class='contained-button' expr:href='data:post.commentFormIframeSrc' rel='noopener'>Tambahkan Komentar</a>
+                            </div>
                           </div>
-                        </div>
+                        </b:with>
                       </b:with>
                     </b:with>
-                  </b:with>
+                  </b:if>
+                  
                 </b:if>
               </b:loop>
             </b:includable>
