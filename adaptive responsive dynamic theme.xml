@@ -1325,6 +1325,10 @@
               margin-bottom: 0;
             }
 
+            :is(.no-ol, .no-ul) :is(ol,ul) {
+              list-style: none;
+            }
+
             ol, ul {
               padding-inline-start: 2rem;
 
@@ -4513,7 +4517,7 @@
           })();
         </script>
       </b:if>
-      <script crossorigin='anonymous' defer='defer' expr:src='&quot;https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=&quot; + data:blog.adsenseClientId'/>
+      <script crossorigin='anonymous' defer='defer' expr:src='&quot;https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=&quot; + data:blog.adsenseClientId + &quot;&amp;host=&quot; + data:blog.adsenseHostId'/>
       <script crossorigin='anonymous' defer='defer' expr:src='&quot;https://www.googletagmanager.com/gtag/js?id=&quot; + data:blog.analyticsAccountNumber'/>
       <script>
         window.dataLayer = window.dataLayer || [];
