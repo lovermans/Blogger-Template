@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE html>
-<html b:css='false' b:defaultwidgetversion='2' b:js='false' b:layoutsVersion='3' b:responsive='true' b:templateUrl='indie.xml' b:templateVersion='1.3.3' expr:dir='data:blog.languageDirection' expr:lang='data:blog.locale' xmlns='http://www.w3.org/1999/xhtml' xmlns:b='http://www.google.com/2005/gml/b' xmlns:data='http://www.google.com/2005/gml/data' xmlns:expr='http://www.google.com/2005/gml/expr'>
+<html b:css='false' b:defaultwidgetversion='2' b:js='true' b:layoutsVersion='3' b:responsive='true' b:templateUrl='indie.xml' b:templateVersion='1.3.3' expr:dir='data:blog.languageDirection' expr:lang='data:blog.locale' xmlns='http://www.w3.org/1999/xhtml' xmlns:b='http://www.google.com/2005/gml/b' xmlns:data='http://www.google.com/2005/gml/data' xmlns:expr='http://www.google.com/2005/gml/expr'>
   <b:attr name='xmlns' value=''/>
   <b:attr name='xmlns:b' value=''/>
   <b:attr name='xmlns:expr' value=''/>
@@ -1180,6 +1180,25 @@
           }
         }
 
+        .scroll-control {
+          display: flex;
+          justify-content: end;
+          margin-top: 1rem;
+          gap: 1rem;
+          flex-wrap: wrap;
+
+          .card {
+            padding: 0.6875rem;
+            border-radius: 50%;
+            border: var(--divider-border);
+            display: none;
+
+            &.active {
+              display: block;
+            }
+          }
+        }
+
         .Blog, .PopularPosts {
           .tags {
             display: flex;
@@ -1802,13 +1821,20 @@
         }
 
         .PopularPosts {
-          .widget-content {
+          ul {
             display: flex;
-            flex-direction: column;
             gap: 1rem;
+            overflow-x: scroll;
+            scrollbar-width: none;
+
+            &.dragging {
+              a, img {
+                pointer-events: none;
+              }
+            }
 
             &>* {
-              flex: 1 100%;
+              flex: 1 0 100%;
             }
 
             .card {
@@ -2295,12 +2321,8 @@
           }
 
           .PopularPosts {
-            .widget-content {
-              flex-direction: row;
-              flex-wrap: wrap;
-
-              .card {
-                flex: 1 20rem;
+            ul>* {
+                flex: 1 0 20rem;
               }
             }
           }
@@ -2848,7 +2870,7 @@
                         <b:with value='data:mainComments skip (data:mainComments.length gt 50 ? data:mainComments.length - 50 : 0)' var='topComments'>
                           <div class='card' id='comments'>
                             <b:if cond='data:topComments.length &gt; 0'>
-                              <details expr:data-postId='data:post.id' open='open'>
+                              <details expr:data-postId='data:post.id'>
                                 <summary>
                                   <span class='title open'>Sembunyikan <data:topComments.length/> komentar terbaru</span>
                                   <span class='title close'>Tampilkan <data:topComments.length/> komentar terbaru</span>
@@ -3611,6 +3633,8 @@
               <!-- LINT.ThenChange(//depot/google3/java/com/google/blogger/b2/layouts/widgets/v2-style.css) -->
             </b:includable>
           </b:widget>
+        </b:section>
+        <b:section id='sidebar' name='sidebar' showaddelement='true'>
           <b:widget cond='!data:view.isPage' id='PopularPosts1' locked='false' title='10 Artikel Populer' type='PopularPosts' version='2' visible='true'>
             <b:widget-settings>
               <b:widget-setting name='numItemsToShow'>10</b:widget-setting>
@@ -3621,8 +3645,10 @@
             <b:includable id='main' var='this'>
               <b:include name='widget-title'/>
               <div class='widget-content'>
+                <b:class name='scrollable-tabs'/>
+                <ul>
                   <b:loop values='data:posts filter (p =&gt; p.id != data:view.postId)' var='post'>
-                    <div class='card'>
+                    <li class='card'>
                       <b:if cond='data:this.postDisplay.showFeaturedImage and data:post.featuredImage'>
                         <img class='thumbnail' expr:alt='data:post.title' expr:src='resizeImage(data:post.featuredImage, 232, &quot;4:3&quot;)' expr:title='data:post.title' loading='lazy'/>
                       </b:if>
@@ -3648,8 +3674,21 @@
                           </a>
                         </div>
                       </div>
-                    </div>
+                    </li>
                   </b:loop>
+                </ul>
+                <div class='scroll-control'>
+                  <button class='card back active'>
+                    <svg aria-hidden='true' viewBox='0 0 24 24'>
+                      <use expr:href='data:blog.homepageUrl.canonical + &quot;/responsive/sprite_v1_6.css.svg#ic_arrow_back_black_24dp&quot;'/>
+                    </svg>
+                  </button>
+                  <button class='card forward active'>
+                    <svg aria-hidden='true' viewBox='0 0 24 24'>
+                      <use expr:href='data:blog.homepageUrl.canonical + &quot;/responsive/sprite_v1_6.css.svg#ic_arrow_forward_black_24dp&quot;'/>
+                    </svg>
+                  </button>
+                </div>
               </div>
             </b:includable>
             <b:includable id='blogThisShare'>
@@ -3903,60 +3942,6 @@
               </div>
             </b:includable>
           </b:widget>
-        </b:section>
-        <b:section id='sidebar' name='sidebar' showaddelement='true'>
-          <b:widget id='Label1' locked='false' title='Topik' type='Label' version='2' visible='true'>
-            <b:widget-settings>
-              <b:widget-setting name='sorting'>FREQUENCY</b:widget-setting>
-              <b:widget-setting name='display'>LIST</b:widget-setting>
-              <b:widget-setting name='selectedLabelsList'/>
-              <b:widget-setting name='showType'>ALL</b:widget-setting>
-              <b:widget-setting name='showFreqNumbers'>true</b:widget-setting>
-            </b:widget-settings>
-            <b:includable id='main' var='this'>
-              <b:include name='widget-title'/>
-              <b:include name='content'/>
-            </b:includable>
-            <b:includable id='cloud'>
-              <b:loop values='data:labels' var='label'>
-                <span class='label-size'>
-                  <b:class expr:name='&quot;label-size-&quot; + data:label.cssSize'/>
-                  <a class='label-name' expr:href='data:label.url'>
-                    <data:label.name/>
-                    <b:if cond='data:this.showFreqNumbers'>
-                      <span class='label-count'>
-                        <data:label.count/>
-                      </span>
-                    </b:if>
-                  </a>
-                </span>
-              </b:loop>
-            </b:includable>
-            <b:includable id='content'>
-              <div class='widget-content'>
-                <b:class expr:name='data:this.display + &quot;-label-widget-content&quot;'/>
-                <b:include cond='data:this.display == &quot;list&quot;' name='list'/>
-                <b:include cond='data:this.display == &quot;cloud&quot;' name='cloud'/>
-              </div>
-            </b:includable>
-            <b:includable id='list'>
-              <ul>
-                <b:loop values='data:labels' var='label'>
-                  <li>
-                    <b:class cond='data:view.search.label contains data:label.name' name='selected'/>
-                    <a class='label-name' expr:href='data:label.url appendParams {max-results: &quot;8&quot;}'>
-                      <data:label.name/>
-                      <b:if cond='data:this.showFreqNumbers'>
-                        <span class='label-count'>
-                          <data:label.count/>
-                        </span>
-                      </b:if>
-                    </a>
-                  </li>
-                </b:loop>
-              </ul>
-            </b:includable>
-          </b:widget>
           <b:widget id='HTML1' locked='false' title='Dukungan' type='HTML' version='2' visible='true'>
             <b:widget-settings>
               <b:widget-setting name='content'><![CDATA[<div id="QRIS-donation">
@@ -4073,6 +4058,58 @@
               <div class='widget-content'>
                 <data:content/>
               </div>
+            </b:includable>
+          </b:widget>
+          <b:widget id='Label1' locked='false' title='Topik' type='Label' version='2' visible='true'>
+            <b:widget-settings>
+              <b:widget-setting name='sorting'>FREQUENCY</b:widget-setting>
+              <b:widget-setting name='display'>LIST</b:widget-setting>
+              <b:widget-setting name='selectedLabelsList'/>
+              <b:widget-setting name='showType'>ALL</b:widget-setting>
+              <b:widget-setting name='showFreqNumbers'>true</b:widget-setting>
+            </b:widget-settings>
+            <b:includable id='main' var='this'>
+              <b:include name='widget-title'/>
+              <b:include name='content'/>
+            </b:includable>
+            <b:includable id='cloud'>
+              <b:loop values='data:labels' var='label'>
+                <span class='label-size'>
+                  <b:class expr:name='&quot;label-size-&quot; + data:label.cssSize'/>
+                  <a class='label-name' expr:href='data:label.url'>
+                    <data:label.name/>
+                    <b:if cond='data:this.showFreqNumbers'>
+                      <span class='label-count'>
+                        <data:label.count/>
+                      </span>
+                    </b:if>
+                  </a>
+                </span>
+              </b:loop>
+            </b:includable>
+            <b:includable id='content'>
+              <div class='widget-content'>
+                <b:class expr:name='data:this.display + &quot;-label-widget-content&quot;'/>
+                <b:include cond='data:this.display == &quot;list&quot;' name='list'/>
+                <b:include cond='data:this.display == &quot;cloud&quot;' name='cloud'/>
+              </div>
+            </b:includable>
+            <b:includable id='list'>
+              <ul>
+                <b:loop values='data:labels' var='label'>
+                  <li>
+                    <b:class cond='data:view.search.label contains data:label.name' name='selected'/>
+                    <a class='label-name' expr:href='data:label.url appendParams {max-results: &quot;8&quot;}'>
+                      <data:label.name/>
+                      <b:if cond='data:this.showFreqNumbers'>
+                        <span class='label-count'>
+                          <data:label.count/>
+                        </span>
+                      </b:if>
+                    </a>
+                  </li>
+                </b:loop>
+              </ul>
             </b:includable>
           </b:widget>
           <b:widget id='PageList1' locked='false' title='Halaman' type='PageList' version='2' visible='true'>
@@ -4281,13 +4318,13 @@
             if (event.target.closest('nav a')) {
               event.stopPropagation();
               closeMainMenu();
-            }
+            };
 
             if (event.target.closest('.comment-action a')) {
               event.preventDefault();
               event.stopPropagation();
               displayReplyForm(event);
-            }
+            };
           });
         };
 
@@ -4318,6 +4355,68 @@
 
         /* ]]> */
       </script>
+      <b:if cond='!data:view.isPage'>
+        <script type='module'>
+          /* <![CDATA[ */
+
+          const popular = document.querySelector('.PopularPosts ul');
+          const popularBack = document.querySelector('.PopularPosts .back');
+          const popularForward = document.querySelector('.PopularPosts .forward');
+
+          popular.scrollLeft += 200;
+
+          function popularScroll() {
+            if (popular.scrollLeft >= 20) {
+                popularBack.classList.add('active');
+              } else {
+                popularBack.classList.remove('active');
+              }
+
+              let maxScrollValue = popular.scrollWidth - popular.clientWidth - 20;
+              console.log("scroll width: ", popular.scrollWidth);
+              console.log("client width: ", popular.clientWidth);
+
+              if (popular.scrollLeft >= maxScrollValue) {
+                popularForward.classList.remove('active');
+              } else {
+                popularForward.classList.add('active');
+              }
+          };
+
+          popularForward.addEventListener('click', () => {
+            popular.scrollLeft += 200;
+            popularScroll();
+          });
+
+          popularBack.addEventListener('click', () => {
+            popular.scrollLeft -= 200;
+            popularScroll();
+          });
+
+          popular.addEventListener('scroll', popularScroll);
+
+          let dragging = false;
+
+          function drag(e) {
+            if (!dragging) return;
+            popular.classList.add('dragging');
+            popular.scrollLeft -= e.movementX;
+          };
+
+          popular.addEventListener('mousedown', () => {
+            dragging = true;
+          });
+
+          popular.addEventListener('mousemove', drag);
+
+          document.addEventListener('mouseup', () => {
+            dragging = false;
+            popular.classList.remove('dragging');
+          });
+          
+          /* ]]> */
+        </script>
+      </b:if>
       <b:if cond='data:view.isPost'>
         <script>
           function getRelatedPosts(feedData) {
