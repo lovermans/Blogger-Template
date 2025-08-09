@@ -1721,6 +1721,7 @@
             border-radius: 0.5em;
             max-width: 100%;
             overflow: auto;
+            overflow-wrap: break-word;
             /* max-height: 75dvh; */
 
             table {
