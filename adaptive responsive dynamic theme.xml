@@ -1317,7 +1317,7 @@
 
             h2, h2 a {
               font-weight: 500;
-              color: var(--clr-inactive);
+              color: var(--clr-accent);
               /* margin: 0 0 -1rem; */
             }
 
@@ -1367,10 +1367,27 @@
               color: var(--clr-accent);
             }
 
+            .black {
+              background: var(--surface-inv);
+              color: var(--surface);
+            }
+
+            .purple{
+              background: color-mix(in srgb,var(--clr-info),var(--clr-error));
+              color:var(--white-c);
+            }
+
             iframe.content {
               width: 100%;
               aspect-ratio: 16/9;
               border: none;
+            }
+
+            .post-image {
+              display: flex;
+              flex-wrap: wrap;
+              justify-content: space-evenly;
+              gap: 1rem;
             }
 
             a[title]:has(>img) {
