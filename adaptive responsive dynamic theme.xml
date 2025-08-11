@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE html>
-<html b:css='false' b:defaultwidgetversion='2' b:js='true' b:layoutsVersion='3' b:responsive='true' b:templateUrl='indie.xml' b:templateVersion='1.3.3' expr:dir='data:blog.languageDirection' expr:lang='data:blog.locale' xmlns='http://www.w3.org/1999/xhtml' xmlns:b='http://www.google.com/2005/gml/b' xmlns:data='http://www.google.com/2005/gml/data' xmlns:expr='http://www.google.com/2005/gml/expr'>
+<html b:css='false' b:defaultwidgetversion='2' b:js='false' b:layoutsVersion='3' b:responsive='true' b:templateUrl='indie.xml' b:templateVersion='1.3.3' expr:dir='data:blog.languageDirection' expr:lang='data:blog.locale' xmlns='http://www.w3.org/1999/xhtml' xmlns:b='http://www.google.com/2005/gml/b' xmlns:data='http://www.google.com/2005/gml/data' xmlns:expr='http://www.google.com/2005/gml/expr'>
   <b:attr name='xmlns' value=''/>
   <b:attr name='xmlns:b' value=''/>
   <b:attr name='xmlns:expr' value=''/>
@@ -14,6 +14,7 @@
         <b:eval expr='data:blog.pageName != &quot;&quot; ? data:blog.pageName.escaped + &quot; - &quot; + data:blog.title.escaped : data:blog.title.escaped'/>
       </title>
       <link expr:href='data:blog.canonicalUrl' rel='canonical'/>
+      <link expr:href='data:blog.homepageUrl' rel='preconnect'/>
       <link crossorigin='' href='https://fonts.gstatic.com' rel='preconnect'/>
       <link crossorigin='' href='https://www.gstatic.com' rel='preconnect'/>
       <link crossorigin='' href='https://translate.googleapis.com' rel='preconnect'/>
@@ -166,7 +167,7 @@
         }
 
         /* vietnamese */
-        @font-face {a
+        @font-face {
           font-family: 'Roboto';
           font-style: italic;
           font-weight: 100 900;
@@ -815,6 +816,27 @@
           }
         }
 
+        .title-header {
+            font: var(--font-h6);
+            letter-spacing: var(--ls-h6);
+            display: block;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            margin: 0 0 0 0.25rem;
+
+            img {
+              width: 2rem;
+              margin-right: 0.5rem;
+              aspect-ratio: 1;
+              border-radius: 50%;
+
+              &.svg {
+                opacity: 0.87;
+              }
+            }
+          }
+
         header {
           position: sticky;
           top: 0;
@@ -822,6 +844,7 @@
           overflow: hidden;
           background: var(--surface);
           padding: 0.25rem 0;
+          margin-bottom: 0.5rem;
 
           :is(.overlay, .widget, .title-header) {
             display: flex;
@@ -877,27 +900,6 @@
 
             button[popovertarget="app-search"] {
               anchor-name: --app-search-toggle;
-            }
-          }
-
-          .title-header {
-            font: var(--font-h6);
-            letter-spacing: var(--ls-h6);
-            display: block;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            margin: 0 0 0 0.25rem;
-
-            img {
-              width: 2rem;
-              margin-right: 0.5rem;
-              aspect-ratio: 1;
-              border-radius: 50%;
-
-              &.svg {
-                opacity: 0.87;
-              }
             }
           }
 
@@ -1072,7 +1074,7 @@
             font: var(--font-caption);
             letter-spacing: var(--ls-caption);
             padding: 1rem 1rem 0.25rem;
-            color: var(--clr-inactive);
+            opacity: 0.6;
             font-weight: 500;
           }
 
@@ -1126,8 +1128,8 @@
           #content, #sidebar {
             margin-bottom: 1rem;
 
-            h3.title, h2.title {
-              color: var(--clr-accent);
+            .widget>h3.title, h2.title {
+              opacity: 0.6;
               padding: 0.75rem;
               text-transform: uppercase;
               display: grid;
@@ -1180,26 +1182,48 @@
           }
         }
 
-        .scroll-control {
-          display: flex;
-          justify-content: end;
-          margin-top: 1rem;
-          gap: 1rem;
-          flex-wrap: wrap;
+        .scrollable-tabs {
+          .header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 1rem;
+            gap: 1rem;
+            align-items: center;
+            flex-wrap: wrap;
 
-          .card {
-            padding: 0.6875rem;
-            border-radius: 50%;
-            border: var(--divider-border);
-            display: none;
+            .title-header {
+              opacity: 0.6;
+            }
+          
+            .scroll-control {
+              flex-shrink: 0;
+              display: flex;
+              gap: 1rem;
+              margin-left: auto;
+              margin-right: 0.5rem;
 
-            &.active {
-              display: block;
+              .card {
+                padding: 0.5rem;
+                border-radius: 50%;
+                border: var(--divider-border);
+                opacity: 0.6;
+
+                &.active {
+                  opacity: 1;
+                }
+              }
             }
           }
         }
 
         .Blog, .PopularPosts {
+          .post-date, .reply-date, .comment-date {
+            font: var(--font-caption);
+            letter-spacing: var(--ls-caption);
+            opacity: 0.6;
+            line-height: var(--lh-proper);
+          }
+
           .tags {
             display: flex;
             flex-wrap: wrap;
@@ -1239,13 +1263,6 @@
               float: left;
               border-radius: 50%;
               margin-right: 1rem;
-            }
-
-            .post-date, .reply-date {
-              font: var(--font-caption);
-              letter-spacing: var(--ls-caption);
-              color: var(--clr-inactive);
-              line-height: var(--lh-proper);
             }
           }
 
@@ -1291,11 +1308,11 @@
 
           #top-alert {
             position: sticky;
-            top: 3rem;
+            top: 7.5rem;
             z-index: 1000;
 
             .scrolled-down:not(:has(:is(#main-navigation, #app-search)[popover]:popover-open:not(dialog))) & {
-              top: 0;
+              top: 4rem;
             }
 
             .banner {
@@ -1315,10 +1332,6 @@
                   content: '\00a8';
                 }
               }
-            }
-
-            &:not(:has(.banner))+#main {
-              margin-top: 1rem;
             }
           }
 
@@ -1570,13 +1583,12 @@
                 margin: auto;
                 width: 3rem;
                 aspect-ratio: 1;
-                padding: 0.5rem 0;
+                padding: 0.75rem 0;
                 border-radius: 50%;
                 background: var(--clr-anchor);
 
                 svg {
                   fill: var(--activated-solid);
-                  width: 2rem;
                 }
 
                 &:hover {
@@ -1643,15 +1655,15 @@
               display: flex;
               gap: 1rem;
               align-items: center;
-              text-transform: uppercase;
+              font-weight:500;
               position: sticky;
-              top: 4rem;
+              top: 7.5rem;
               padding: 1rem;
               background: var(--clr-accent);
               color: var(--surface);
               border-radius: 0.25rem;
               z-index: 8;
-              font-weight: 500;
+              color: var(--surface);
 
               .child-comment-title & {
                 padding: 0.5rem 1rem;
@@ -1659,12 +1671,12 @@
               }
 
               .scrolled-down & {
-                top: 0;
+                top: 4rem;
               }
 
               .line {
                 flex-grow: 1;
-                height: 0.125rem;
+                height: 0.0625rem;
                 background: var(--surface);
               }
 
@@ -1700,13 +1712,6 @@
 
             .comment-author a {
               font-weight: 500;
-              line-height: var(--lh-proper);
-            }
-
-            .comment-date {
-              font: var(--font-caption);
-              letter-spacing: var(--ls-caption);
-              color: var(--clr-inactive);
               line-height: var(--lh-proper);
             }
 
@@ -1784,6 +1789,7 @@
 
               :is(thead, tbody) th {
                 position: sticky;
+                background: var(--activated-solid);
               }
 
               thead th {
@@ -1793,7 +1799,6 @@
                 font-weight: 500;
                 top: 0;
                 z-index: 10;
-                background: var(--activated-solid);
               }
 
               tbody {
@@ -1820,6 +1825,22 @@
           }
         }
 
+        .PopularPosts, .Label {
+          ul {
+            display: flex;
+            overflow-x: auto;
+            scrollbar-width: none;
+            scroll-behavior: smooth;
+
+            &.dragging {
+              scroll-behavior: auto;
+              a, img {
+                pointer-events: none;
+              }
+            }
+          }
+        }
+
         .PopularPosts {
           ul {
             display: flex;
@@ -1834,7 +1855,7 @@
             }
 
             &>* {
-              flex: 1 0 100%;
+              flex: 1 0 80%;
             }
 
             .card {
@@ -1862,12 +1883,8 @@
                   line-height: var(--lh-proper);
                 }
 
-                .post-date {
-                  font: var(--font-caption);
-                  letter-spacing: var(--font-caption);
-                  color: var(--clr-inactive);
+                .post-author {
                   margin: 0 0 0.5rem;
-                  line-height: var(--lh-proper);
 
                   a {
                     font-weight: 500;
@@ -1925,11 +1942,73 @@
         }
 
         .Label {
+          margin: 0 0 1rem;
+          position: sticky;
+          top: 4rem;
+          z-index: 1100;
+          background: var(--surface);
+          --bg-label: var(--surface);
+
+          :is(.scrolled-up, .scrolled-down) & {
+            box-shadow: var(--elev-shadow-4);
+            background: var(--elev-solid-bg-16);
+            --bg-label: var(--elev-solid-bg-16);
+          }
+
+          .scrolled-down & {
+            top: 0;
+          }
+
+          .widget-content {
+            position: relative;
+            overflow-x: hidden;
+          }
+
+          button {
+            position: absolute;
+            top: 0;
+            line-height: 2.5rem;
+            display: none;
+            
+            &.forward {
+              right: 0;
+              background: linear-gradient(to left, var(--bg-label) 50%, transparent);
+              padding: 0.5rem 0.5rem 0.5rem 1.5rem;
+
+              &:hover {
+                background: linear-gradient(to left, var(--bg-label) 35%, transparent);
+              }
+
+              &:focus {
+                background: linear-gradient(to left, var(--bg-label) 25%, transparent);
+              }
+            }
+
+            &.back {
+              background: linear-gradient(to right, var(--bg-label) 50%, transparent);
+              padding: 0.5rem 1.5rem 0.5rem 0.5rem;
+
+              &:hover {
+                background: linear-gradient(to right, var(--bg-label) 35%, transparent);
+              }
+
+              &:focus {
+                background: linear-gradient(to right, var(--bg-label) 25%, transparent);
+              }
+            }
+
+            &.active {
+              display: block;
+            }
+          }
+
           ul {
-            display: flex;
-            flex-wrap: wrap;
             gap: 1rem 0.5rem;
-            padding: 0.25rem 1rem 0.5rem;
+            padding: 0.5rem 1rem;
+
+            li {
+              flex-shrink: 0;
+            }
           }
 
           a {
@@ -1937,11 +2016,13 @@
             letter-spacing: var(--ls-body-2);
             color: var(--surface);
             padding: 0.5rem 0.75rem;
-            border-radius: 4rem;
+            border-radius: 8rem;
             background: var(--clr-accent);
             display: flex;
             align-items: center;
+            justify-content: space-evenly;
             gap: 0.75rem;
+            min-width: 8rem;
 
             .label-count {
               padding: 0.25rem;
@@ -1952,18 +2033,18 @@
             }
 
             &:hover {
-              background: var(--clr-anchor-hover);
+              background: var(--clr-accent-hover);
 
               .label-count {
-                background: var(--clr-accent-hover);
+                background: var(--clr-anchor-hover);
               }
             }
 
             &:focus {
-              background: var(--clr-anchor-active);
+              background: var(--clr-accent-focus);
 
               .label-count {
-                background: var(--clr-accent-focus);
+                background: var(--clr-anchor-active);
               }
             }
 
@@ -2215,6 +2296,14 @@
             margin-left: 1rem;
             margin-right: 1rem;
           }
+
+          .Blog #top-alert .banner {
+            margin:0 -1rem 1rem;
+          }
+
+          .Label {
+            margin: 0 -1rem 1rem;
+          }
         }
 
         @media screen and (min-width: 64rem) {
@@ -2279,23 +2368,25 @@
 
           .Blog {
             #top-alert {
-              top: 0;
+              top: 4rem;
 
               .banner {
                 border-radius: 0.25rem;
-                margin: 0 1rem 1rem;
-
-                &:first-child {
-                  margin: 1rem;
-                }
+                margin: 0 0 1rem;
               }
             }
 
             details {
               summary {
-                top: 0;
+                top: 4rem;
               }
             }
+          }
+
+          .Label {
+            top: 0;
+            margin: 0 0 1rem;
+            border-radius: 0.25rem;
           }
 
           #cookieChoiceInfo {
@@ -2317,13 +2408,6 @@
               margin-top: 1rem;
               margin-right: 2rem;
               max-width: none;
-            }
-          }
-
-          .PopularPosts {
-            ul>* {
-                flex: 1 0 20rem;
-              }
             }
           }
 
@@ -2672,6 +2756,68 @@
           	
       <main id='main-content'>				
         <b:section id='content' name='content' showaddelement='true'>
+          <b:widget cond='!data:view.isPage' id='Label1' locked='false' title='Topik' type='Label' version='2' visible='true'>
+            <b:widget-settings>
+              <b:widget-setting name='sorting'>FREQUENCY</b:widget-setting>
+              <b:widget-setting name='display'>LIST</b:widget-setting>
+              <b:widget-setting name='selectedLabelsList'/>
+              <b:widget-setting name='showType'>ALL</b:widget-setting>
+              <b:widget-setting name='showFreqNumbers'>true</b:widget-setting>
+            </b:widget-settings>
+            <b:includable id='main' var='this'>
+              <b:class name='scrollable-tabs'/>
+              <b:include name='content'/>
+            </b:includable>
+            <b:includable id='cloud'>
+              <b:loop values='data:labels' var='label'>
+                <span class='label-size'>
+                  <b:class expr:name='&quot;label-size-&quot; + data:label.cssSize'/>
+                  <a class='label-name' expr:href='data:label.url'>
+                    <data:label.name/>
+                    <b:if cond='data:this.showFreqNumbers'>
+                      <span class='label-count'>
+                        <data:label.count/>
+                      </span>
+                    </b:if>
+                  </a>
+                </span>
+              </b:loop>
+            </b:includable>
+            <b:includable id='content'>
+              <div class='widget-content'>
+                <b:class expr:name='data:this.display + &quot;-label-widget-content&quot;'/>
+                <b:include cond='data:this.display == &quot;list&quot;' name='list'/>
+                <b:include cond='data:this.display == &quot;cloud&quot;' name='cloud'/>
+              </div>
+            </b:includable>
+            <b:includable id='list'>
+              <button class='back' title='Geser ke Kiri'>
+                <svg aria-hidden='true' viewBox='0 0 24 24'>
+                  <use expr:href='data:blog.homepageUrl.canonical + &quot;/responsive/sprite_v1_6.css.svg#ic_chevron_left_black_24dp&quot;'/>
+                </svg>
+              </button>
+              <ul>
+                <b:loop values='data:labels' var='label'>
+                  <li>
+                    <b:class cond='data:view.search.label contains data:label.name' name='selected'/>
+                    <a class='label-name' expr:href='data:label.url appendParams {max-results: &quot;8&quot;}'>
+                      <data:label.name/>
+                      <b:if cond='data:this.showFreqNumbers'>
+                        <span class='label-count'>
+                          <data:label.count/>
+                        </span>
+                      </b:if>
+                    </a>
+                  </li>
+                </b:loop>
+              </ul>
+              <button class='forward' title='Geser ke Kanan'>
+                <svg aria-hidden='true' viewBox='0 0 24 24'>
+                  <use expr:href='data:blog.homepageUrl.canonical + &quot;/responsive/sprite_v1_6.css.svg#ic_chevron_right_black_24dp&quot;'/>
+                </svg>
+              </button>
+            </b:includable>
+          </b:widget>
           <b:widget id='Blog1' locked='true' title='Postingan Blog' type='Blog' version='2' visible='true'>
             <b:widget-settings>
               <b:widget-setting name='showDateHeader'>false</b:widget-setting>
@@ -3643,9 +3789,24 @@
               <b:widget-setting name='timeRange'>ALL_TIME</b:widget-setting>
             </b:widget-settings>
             <b:includable id='main' var='this'>
-              <b:include name='widget-title'/>
+              <b:class name='scrollable-tabs'/>
+              <div class='header'>
+                <h3 class='title-header'><data:title/></h3>
+                <div class='scroll-control'>
+                  <button class='card back' title='Geser ke Kiri'>
+                    <svg aria-hidden='true' viewBox='0 0 24 24'>
+                      <use expr:href='data:blog.homepageUrl.canonical + &quot;/responsive/sprite_v1_6.css.svg#ic_chevron_left_black_24dp&quot;'/>
+                    </svg>
+                  </button>
+                  <button class='card forward' title='Geser ke Kanan'>
+                    <svg aria-hidden='true' viewBox='0 0 24 24'>
+                      <use expr:href='data:blog.homepageUrl.canonical + &quot;/responsive/sprite_v1_6.css.svg#ic_chevron_right_black_24dp&quot;'/>
+                    </svg>
+                  </button>
+                </div>
+              </div>
+              
               <div class='widget-content'>
-                <b:class name='scrollable-tabs'/>
                 <ul>
                   <b:loop values='data:posts filter (p =&gt; p.id != data:view.postId)' var='post'>
                     <li class='card'>
@@ -3661,11 +3822,11 @@
                           </b:loop>
                         </div>
                         <h4><data:post.title/></h4>
-                        <div class='post-date'>
+                        <div class='post-author'>
                           <a expr:href='data:post.author.profileUrl'>
                             <data:post.author.name/>
                           </a> &#9658;
-                          <b:eval expr='format(data:post.date,  &quot;dd MMM YYYY&quot;)'/> &#8226; <data:post.numberOfComments/> komentar
+                          <span class='post-date'><b:eval expr='format(data:post.date,  &quot;dd MMM YYYY&quot;)'/> &#8226; <data:post.numberOfComments/> komentar</span>
                         </div>
                         <p><data:post.snippets.short/></p>
                         <div class='action'>
@@ -3677,18 +3838,6 @@
                     </li>
                   </b:loop>
                 </ul>
-                <div class='scroll-control'>
-                  <button class='card back active'>
-                    <svg aria-hidden='true' viewBox='0 0 24 24'>
-                      <use expr:href='data:blog.homepageUrl.canonical + &quot;/responsive/sprite_v1_6.css.svg#ic_arrow_back_black_24dp&quot;'/>
-                    </svg>
-                  </button>
-                  <button class='card forward active'>
-                    <svg aria-hidden='true' viewBox='0 0 24 24'>
-                      <use expr:href='data:blog.homepageUrl.canonical + &quot;/responsive/sprite_v1_6.css.svg#ic_arrow_forward_black_24dp&quot;'/>
-                    </svg>
-                  </button>
-                </div>
               </div>
             </b:includable>
             <b:includable id='blogThisShare'>
@@ -4060,58 +4209,6 @@
               </div>
             </b:includable>
           </b:widget>
-          <b:widget id='Label1' locked='false' title='Topik' type='Label' version='2' visible='true'>
-            <b:widget-settings>
-              <b:widget-setting name='sorting'>FREQUENCY</b:widget-setting>
-              <b:widget-setting name='display'>LIST</b:widget-setting>
-              <b:widget-setting name='selectedLabelsList'/>
-              <b:widget-setting name='showType'>ALL</b:widget-setting>
-              <b:widget-setting name='showFreqNumbers'>true</b:widget-setting>
-            </b:widget-settings>
-            <b:includable id='main' var='this'>
-              <b:include name='widget-title'/>
-              <b:include name='content'/>
-            </b:includable>
-            <b:includable id='cloud'>
-              <b:loop values='data:labels' var='label'>
-                <span class='label-size'>
-                  <b:class expr:name='&quot;label-size-&quot; + data:label.cssSize'/>
-                  <a class='label-name' expr:href='data:label.url'>
-                    <data:label.name/>
-                    <b:if cond='data:this.showFreqNumbers'>
-                      <span class='label-count'>
-                        <data:label.count/>
-                      </span>
-                    </b:if>
-                  </a>
-                </span>
-              </b:loop>
-            </b:includable>
-            <b:includable id='content'>
-              <div class='widget-content'>
-                <b:class expr:name='data:this.display + &quot;-label-widget-content&quot;'/>
-                <b:include cond='data:this.display == &quot;list&quot;' name='list'/>
-                <b:include cond='data:this.display == &quot;cloud&quot;' name='cloud'/>
-              </div>
-            </b:includable>
-            <b:includable id='list'>
-              <ul>
-                <b:loop values='data:labels' var='label'>
-                  <li>
-                    <b:class cond='data:view.search.label contains data:label.name' name='selected'/>
-                    <a class='label-name' expr:href='data:label.url appendParams {max-results: &quot;8&quot;}'>
-                      <data:label.name/>
-                      <b:if cond='data:this.showFreqNumbers'>
-                        <span class='label-count'>
-                          <data:label.count/>
-                        </span>
-                      </b:if>
-                    </a>
-                  </li>
-                </b:loop>
-              </ul>
-            </b:includable>
-          </b:widget>
           <b:widget id='PageList1' locked='false' title='Halaman' type='PageList' version='2' visible='true'>
             <b:widget-settings>
               <b:widget-setting name='pageListJson'><![CDATA[{"2369109865715658629":{"href":"https://desainblogmudah.blogspot.com/p/privacy-policy.html","position":2,"title":"Privacy Policy"},"4018998855769414664":{"href":"https://desainblogmudah.blogspot.com/p/peta-situs.html","position":0,"title":"Daftar Isi"},"2597855448102335463":{"href":"https://desainblogmudah.blogspot.com/p/tentang-kami.html","position":1,"title":"Tentang Kami"}}]]></b:widget-setting>
@@ -4359,61 +4456,83 @@
         <script type='module'>
           /* <![CDATA[ */
 
-          const popular = document.querySelector('.PopularPosts ul');
-          const popularBack = document.querySelector('.PopularPosts .back');
-          const popularForward = document.querySelector('.PopularPosts .forward');
+          const scrolls = document.querySelectorAll('.scrollable-tabs ul');
+          const scrollBacks = document.querySelectorAll('.scrollable-tabs .back');
+          const scrollForwards = document.querySelectorAll('.scrollable-tabs .forward');
 
-          popular.scrollLeft += 200;
+          function scrollControl(e) {
+            let scrollBox = e.target;
+            let scrollLeftValue = Math.ceil(scrollBox.scrollLeft);
+            let scrollableWidth = scrollBox.scrollWidth - scrollBox.clientWidth;
+            let backButton = scrollBox.closest('.scrollable-tabs').querySelector('button.back');
+            let forwardButton = scrollBox.closest('.scrollable-tabs').querySelector('button.forward');
 
-          function popularScroll() {
-            if (popular.scrollLeft >= 20) {
-                popularBack.classList.add('active');
-              } else {
-                popularBack.classList.remove('active');
-              }
-
-              let maxScrollValue = popular.scrollWidth - popular.clientWidth - 20;
-              console.log("scroll width: ", popular.scrollWidth);
-              console.log("client width: ", popular.clientWidth);
-
-              if (popular.scrollLeft >= maxScrollValue) {
-                popularForward.classList.remove('active');
-              } else {
-                popularForward.classList.add('active');
-              }
+            scrollLeftValue > 0 ? backButton.classList.add('active') : backButton.classList.remove('active');
+            scrollableWidth > scrollLeftValue ? forwardButton.classList.add('active') : forwardButton.classList.remove('active');
           };
 
-          popularForward.addEventListener('click', () => {
-            popular.scrollLeft += 200;
-            popularScroll();
+          scrollBacks?.forEach((back) => {
+            back.addEventListener('click', (e) => {
+              e.target.closest('.scrollable-tabs').querySelector('ul').scrollLeft -= 200;
+            });
           });
 
-          popularBack.addEventListener('click', () => {
-            popular.scrollLeft -= 200;
-            popularScroll();
+          scrollForwards?.forEach((forward) => {
+            forward.addEventListener('click', (e) => {
+              e.target.closest('.scrollable-tabs').querySelector('ul').scrollLeft += 200;
+            });
           });
 
-          popular.addEventListener('scroll', popularScroll);
+          scrolls?.forEach((scroll) => {scroll.addEventListener('scroll', scrollControl)});
+
+          window.addEventListener('DOMContentLoaded', () => {
+            scrolls?.forEach((scroll) => {
+              let backButton = scroll.closest('.scrollable-tabs').querySelector('button.back');
+              let forwardButton = scroll.closest('.scrollable-tabs').querySelector('button.forward');
+              
+              scroll.scrollWidth > scroll.clientWidth || scroll.scrollWidth >= window.innerWidth ? forwardButton.classList.add('active') : forwardButton.classList.remove('active');
+              if (window.innerWidth >= scroll.scrollWidth) {backButton.classList.remove('active');}; 
+            });
+          });
+
+          window.addEventListener('resize', () => {
+            scrolls?.forEach((scroll) => {
+              let backButton = scroll.closest('.scrollable-tabs').querySelector('button.back');
+              let forwardButton = scroll.closest('.scrollable-tabs').querySelector('button.forward');
+              
+              scroll.scrollWidth > scroll.clientWidth || scroll.scrollWidth >= window.innerWidth ? forwardButton.classList.add('active') : forwardButton.classList.remove('active');
+              if (window.innerWidth >= scroll.scrollWidth) {backButton.classList.remove('active');};
+
+              let scrollLeftValue = Math.round(scroll.scrollLeft);
+
+              scrollLeftValue > 0 ? backButton.classList.add('active') : backButton.classList.remove('active');
+            });
+          });
 
           let dragging = false;
 
-          function drag(e) {
-            if (!dragging) return;
-            popular.classList.add('dragging');
-            popular.scrollLeft -= e.movementX;
-          };
-
-          popular.addEventListener('mousedown', () => {
-            dragging = true;
+          scrolls?.forEach((scroll) => {
+            scroll.addEventListener('mousedown', () => {
+              dragging = true;
+            });
           });
 
-          popular.addEventListener('mousemove', drag);
+          scrolls?.forEach((scroll) => {
+            scroll.addEventListener('mousemove', (e) => {
+              if (!dragging) return;
+              var dragBox = e.target.closest('ul');
+              dragBox.classList.add('dragging');
+              dragBox.scrollLeft -= e.movementX;
+            });
+          });
 
-          document.addEventListener('mouseup', () => {
+          window.addEventListener('mouseup', () => {
             dragging = false;
-            popular.classList.remove('dragging');
+            scrolls?.forEach((scroll) => {
+              scroll.classList.remove('dragging');
+            });
           });
-          
+
           /* ]]> */
         </script>
       </b:if>
@@ -4523,7 +4642,7 @@
               svg.setAttribute(&quot;aria-hidden&quot;, &quot;true&quot;);
 
               const use = document.createElementNS(&quot;http://www.w3.org/2000/svg&quot;, &quot;use&quot;);
-              use.setAttributeNS(&quot;http://www.w3.org/1999/xlink&quot;, &quot;href&quot;, &quot;<b:eval expr='data:blog.homepageUrl.canonical + &quot;/responsive/sprite_v1_6.css.svg#ic_chevron_right_black_24dp&quot;'/>&quot;);
+              use.setAttributeNS(&quot;http://www.w3.org/1999/xlink&quot;, &quot;href&quot;, &quot;<b:eval expr='data:blog.homepageUrl.canonical + &quot;/responsive/sprite_v1_6.css.svg#ic_arrow_forward_black_24dp&quot;'/>&quot;);
               svg.appendChild(use);
 
               const a = document.createElement(&quot;a&quot;);
