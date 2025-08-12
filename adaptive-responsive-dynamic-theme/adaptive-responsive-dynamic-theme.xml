@@ -4565,7 +4565,7 @@
 
               /* Try to get thumbnail, fallback to default */
               try {
-                thumbUrl = entry.media$thumbnail.url.replace(/\/s72[^\/]*\//g,&quot;/s232-w232-h174-p-k-no-nu/&quot;);
+                thumbUrl = entry.media$thumbnail.url.replace(/\/s72[^\/]*\//g,&quot;/w232-h174-p-k-no-nu/&quot;);
               } catch {
                 thumbUrl = &quot;&quot;;
               }
@@ -4755,3 +4755,4 @@
     </body>
   </b:with>
 </html>
+
