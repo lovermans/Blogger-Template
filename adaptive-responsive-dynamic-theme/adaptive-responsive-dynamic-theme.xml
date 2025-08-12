@@ -2905,6 +2905,10 @@
                           {
                             &quot;@context&quot;:&quot;https://schema.org&quot;,
                             &quot;@type&quot;:&quot;Article&quot;,
+                            &quot;mainEntityOfPage&quot;: {
+                              &quot;@type&quot;: &quot;WebPage&quot;,
+                              &quot;@id&quot;: &quot;<data:view.url.canocical.jsonEscaped/>&quot;
+                            },
                             &quot;headline&quot;:&quot;<data:view.title.jsonEscaped/>&quot;,
                             &quot;description&quot;:&quot;<data:view.description.jsonEscaped/>&quot;,
                             &quot;image&quot;: [
@@ -2946,21 +2950,23 @@
                               ],
                               &quot;logo&quot;: &quot;<b:eval expr='(resizeImage(data:blog-logo, 192, &quot;1:1&quot;)).jsonEscaped'/>&quot;
                             }
+                          },
+                          {
+                            &quot;@context&quot;:&quot;https://schema.org&quot;,
+                            &quot;@type&quot;:&quot;BreadcrumbList&quot;,
+                            &quot;itemListElement&quot;: [{
+                              &quot;@type&quot;:&quot;ListItem&quot;,
+                              &quot;position&quot;:1,
+                              &quot;item&quot;:&quot;<b:eval expr='data:blog.canonicalHomepageUrl + data:post.date.year'/>&quot;,
+                              &quot;name&quot;:&quot;<data:post.date.year/>&quot;
+                            },
+                            {
+                              &quot;@type&quot;:&quot;ListItem&quot;,
+                              &quot;position&quot;:2,
+                              &quot;item&quot;:&quot;<b:eval expr='data:blog.canonicalHomepageUrl + data:post.date.month'/>&quot;,
+                              &quot;name&quot;:&quot;<data:post.date.month/>&quot;
+                            }]
                           }
-                          <b:if cond='data:post.labels.length &gt; 0'>
-                            <b:loop index='n' values='data:post.labels' var='breadcrumb'>
-                              ,{
-                                &quot;@context&quot;:&quot;https://schema.org&quot;,
-                                &quot;@type&quot;:&quot;BreadcrumbList&quot;,
-                                &quot;itemListElement&quot;: {
-                                  &quot;@type&quot;:&quot;ListItem&quot;,
-                                  &quot;position&quot;:<b:eval expr='data:n + 1'/>,
-                                  &quot;item&quot;:&quot;<data:breadcrumb.url.jsonEscaped/>&quot;,
-                                  &quot;name&quot;:&quot;<data:breadcrumb.name.jsonEscaped/>&quot;
-                                }
-                              }
-                            </b:loop>
-                          </b:if>
                         ]
                       </script>
                     </b:if>
@@ -3062,7 +3068,7 @@
                                         </div>
                                         <b:with value='data:post.comments filter (y =&gt; y.inReplyTo == data:parentComment.id)' var='subComments'>
                                           <b:if cond='data:subComments.length &gt; 0'>
-                                            <details class='child-comment-title' open='open'>
+                                            <details class='child-comment-title'>
                                               <summary>
                                                 <span class='title open'>Sembunyikan <data:subComments.length/> balasan</span>
                                                 <span class='title close'>Tampilkan <data:subComments.length/> balasan</span>
@@ -4736,8 +4742,8 @@
               document.getElementsByTagName(&quot;head&quot;)[0].appendChild(script);
           })();
         </script>
+        <script crossorigin='anonymous' defer='defer' expr:src='&quot;https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=&quot; + data:blog.adsenseClientId + &quot;&amp;host=&quot; + data:blog.adsenseHostId'/>
       </b:if>
-      <script crossorigin='anonymous' defer='defer' expr:src='&quot;https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=&quot; + data:blog.adsenseClientId + &quot;&amp;host=&quot; + data:blog.adsenseHostId'/>
       <script crossorigin='anonymous' defer='defer' expr:src='&quot;https://www.googletagmanager.com/gtag/js?id=&quot; + data:blog.analyticsAccountNumber'/>
       <script>
         window.dataLayer = window.dataLayer || [];
