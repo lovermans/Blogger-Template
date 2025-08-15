@@ -2708,13 +2708,20 @@
         </script>
       </b:if>
       
-      <link crossorigin='' href='https://cdn.ampproject.org' rel='preconnect'/>
-      <script async='async' src='https://cdn.ampproject.org/v0.js'/>
-      <script async='async' custom-element='amp-iframe' src='https://cdn.ampproject.org/v0/amp-iframe-0.1.js'/>
+      <b:if cond='data:view.url != data:view.url params {amp: &quot;1&quot;} and data:view.isPost'>
+        <link crossorigin='' href='https://cdn.ampproject.org' rel='preconnect'/>
+        <script async='async' src='https://cdn.ampproject.org/v0.js'/>
+        <script async='async' custom-element='amp-iframe' src='https://cdn.ampproject.org/v0/amp-iframe-0.1.js'/>
+      </b:if>
       
       <b:if cond='data:view.url == data:view.url params {amp: &quot;1&quot;} and (data:view.isMultipleItems or data:view.isPost)'>
+        <link crossorigin='' href='https://cdn.ampproject.org' rel='preconnect'/>
+        <script async='async' src='https://cdn.ampproject.org/v0.js'/>
         <script async='async' custom-element='amp-form' src='https://cdn.ampproject.org/v0/amp-form-0.1.js'/>
         <script async='async' custom-element='amp-auto-ads' src='https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js'/>
+        <b:if cond='data:view.isPost'>
+          <script async='async' custom-element='amp-iframe' src='https://cdn.ampproject.org/v0/amp-iframe-0.1.js'/>
+        </b:if>
         <style amp-custom=''>
           /* <![CDATA[ */
 
@@ -3522,9 +3529,18 @@
             margin: 0 0 1rem;
           }
 
+          .banner a {
+            color: var(--white-c);
+            text-decoration: underline;
+          }
+
           .banner span {
             font-weight: 500;
             font-style: italic;
+          }
+
+          .banner span::before, .banner span::after {
+            content: '\00a8';
           }
 
           .card {
@@ -5459,8 +5475,13 @@
             </b:includable>
             <b:includable id='snackbar'>
               <div id='top-alert'>
+                <b:if cond='data:view.url == data:view.url params {amp: &quot;1&quot;} and (data:view.isMultipleItems or data:view.isPost)'>
+                  <div class='banner'>
+                    Anda berada dalam mode tampilan <span class='search-label'>halaman seluler yang dipercepat</span>. Anda juga bisa beralih ke <a expr:href='data:view.url.canonical'>mode tampilan normal</a> untuk pengalaman terbaik.
+                  </div>
+                </b:if>
                 <b:if cond='data:view.isHomepage and data:posts.empty'>
-                  <div class='snackbar'>
+                  <div class='banner'>
                     <data:messages.theresNothingHere/>
                   </div>
                 </b:if>
