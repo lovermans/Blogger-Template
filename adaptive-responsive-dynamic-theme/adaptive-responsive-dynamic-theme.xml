@@ -2707,9 +2707,12 @@
           /* ]]> */
         </script>
       </b:if>
+      
+      <link crossorigin='' href='https://cdn.ampproject.org' rel='preconnect'/>
+      <script async='async' src='https://cdn.ampproject.org/v0.js'/>
+      <script async='async' custom-element='amp-iframe' src='https://cdn.ampproject.org/v0/amp-iframe-0.1.js'/>
+      
       <b:if cond='data:view.url == data:view.url params {amp: &quot;1&quot;} and (data:view.isMultipleItems or data:view.isPost)'>
-        <link crossorigin='' href='https://cdn.ampproject.org' rel='preconnect'/>
-        <script async='async' src='https://cdn.ampproject.org/v0.js'/>
         <script async='async' custom-element='amp-form' src='https://cdn.ampproject.org/v0/amp-form-0.1.js'/>
         <script async='async' custom-element='amp-auto-ads' src='https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js'/>
         <style amp-custom=''>
