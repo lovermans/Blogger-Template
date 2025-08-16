@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE html>
-<html b:css='false' b:defaultwidgetversion='2' b:js='false' b:layoutsVersion='3' b:responsive='true' b:templateUrl='indie.xml' b:templateVersion='1.3.3' expr:dir='data:blog.languageDirection' expr:lang='data:blog.locale' xmlns='http://www.w3.org/1999/xhtml' xmlns:b='http://www.google.com/2005/gml/b' xmlns:data='http://www.google.com/2005/gml/data' xmlns:expr='http://www.google.com/2005/gml/expr'>
+<html b:css='false' b:defaultwidgetversion='2' b:js='false' b:layoutsVersion='3' b:responsive='false' b:templateUrl='indie.xml' b:templateVersion='1.3.3' expr:dir='data:blog.languageDirection' expr:lang='data:blog.locale' xmlns='http://www.w3.org/1999/xhtml' xmlns:b='http://www.google.com/2005/gml/b' xmlns:data='http://www.google.com/2005/gml/data' xmlns:expr='http://www.google.com/2005/gml/expr'>
   <b:attr name='xmlns' value=''/>
   <b:attr name='xmlns:b' value=''/>
   <b:attr name='xmlns:expr' value=''/>
@@ -4802,7 +4802,7 @@
               
               <b:loop index='x' values='data:posts' var='post'>
                 <b:if cond='data:view.isPost'>
-                  <b:tag cond='data:view.url != data:view.url params {amp: &quot;1&quot;} or not (data:view.isMultipleItems or data:view.isPost)' expr:data-source='data:blog.canonicalHomepageUrl + &quot;feeds/posts/summary/-/&quot; + data:post.labels.first.name + &quot;?alt=json-in-script&amp;max-results=8&amp;callback=getRelatedPosts&quot;' expr:data-url='data:blog.canonicalUrl' id='related-posts' name='div'/>
+                  <b:tag cond='data:view.url != data:view.url params {amp: &quot;1&quot;} or not (data:view.isMultipleItems or data:view.isPost)' expr:data-source='data:blog.canonicalHomepageUrl + &quot;feeds/posts/summary/-/&quot; + data:post.labels.first.name + &quot;?alt=json&amp;max-results=8&quot;' expr:data-url='data:blog.canonicalUrl' id='related-posts' name='div'/>
                   
                   <b:if cond='data:post.allowComments'>
                     <b:with value='data:comment-avatar ?: &quot;https://1.bp.blogspot.com/-XBvpDLx2IL4/AAAAAAAAAAI/AAAAAAAAAS8/yNvDEYNszDk/s40/photo.jpg&quot;' var='comment-avatar'>
@@ -6266,9 +6266,11 @@
             };
           };
 
-          showHideTopAppBarOnScroll(document.body, 500);
-          handleGlobalClickEvent();
-          window.addEventListener('message', () => adjustFormHeight(event), { passive: true });
+          window.addEventListener('DOMContentLoaded', () => {
+            showHideTopAppBarOnScroll(document.body, 500);
+            handleGlobalClickEvent();
+            window.addEventListener('message', () => adjustFormHeight(event), { passive: true });
+          });
 
           /* ]]> */
         </script>
@@ -6291,21 +6293,21 @@
               scrollableWidth > scrollLeftValue ? forwardButton.classList.add('active') : forwardButton.classList.remove('active');
             };
 
-            scrollBacks?.forEach((back) => {
-              back.addEventListener('click', (e) => {
-                e.target.closest('.scrollable-tabs').querySelector('ul').scrollLeft -= 200;
-              });
-            });
-
-            scrollForwards?.forEach((forward) => {
-              forward.addEventListener('click', (e) => {
-                e.target.closest('.scrollable-tabs').querySelector('ul').scrollLeft += 200;
-              });
-            });
-
-            scrolls?.forEach((scroll) => {scroll.addEventListener('scroll', scrollControl)});
-
             window.addEventListener('DOMContentLoaded', () => {
+              scrollBacks?.forEach((back) => {
+                back.addEventListener('click', (e) => {
+                  e.target.closest('.scrollable-tabs').querySelector('ul').scrollLeft -= 200;
+                });
+              });
+
+              scrollForwards?.forEach((forward) => {
+                forward.addEventListener('click', (e) => {
+                  e.target.closest('.scrollable-tabs').querySelector('ul').scrollLeft += 200;
+                });
+              });
+
+              scrolls?.forEach((scroll) => {scroll.addEventListener('scroll', scrollControl)});
+
               scrolls?.forEach((scroll) => {
                 let backButton = scroll.closest('.scrollable-tabs').querySelector('button.back');
                 let forwardButton = scroll.closest('.scrollable-tabs').querySelector('button.forward');
@@ -6313,43 +6315,43 @@
                 scroll.scrollWidth > scroll.clientWidth || scroll.scrollWidth >= window.innerWidth ? forwardButton.classList.add('active') : forwardButton.classList.remove('active');
                 if (window.innerWidth >= scroll.scrollWidth) {backButton.classList.remove('active');}; 
               });
-            });
 
-            window.addEventListener('resize', () => {
+              window.addEventListener('resize', () => {
+                scrolls?.forEach((scroll) => {
+                  let backButton = scroll.closest('.scrollable-tabs').querySelector('button.back');
+                  let forwardButton = scroll.closest('.scrollable-tabs').querySelector('button.forward');
+
+                  scroll.scrollWidth > scroll.clientWidth || scroll.scrollWidth >= window.innerWidth ? forwardButton.classList.add('active') : forwardButton.classList.remove('active');
+                  if (window.innerWidth >= scroll.scrollWidth) {backButton.classList.remove('active');};
+
+                  let scrollLeftValue = Math.round(scroll.scrollLeft);
+
+                  scrollLeftValue > 0 ? backButton.classList.add('active') : backButton.classList.remove('active');
+                });
+              });
+
+              let dragging = false;
+
               scrolls?.forEach((scroll) => {
-                let backButton = scroll.closest('.scrollable-tabs').querySelector('button.back');
-                let forwardButton = scroll.closest('.scrollable-tabs').querySelector('button.forward');
-
-                scroll.scrollWidth > scroll.clientWidth || scroll.scrollWidth >= window.innerWidth ? forwardButton.classList.add('active') : forwardButton.classList.remove('active');
-                if (window.innerWidth >= scroll.scrollWidth) {backButton.classList.remove('active');};
-
-                let scrollLeftValue = Math.round(scroll.scrollLeft);
-
-                scrollLeftValue > 0 ? backButton.classList.add('active') : backButton.classList.remove('active');
+                scroll.addEventListener('mousedown', () => {
+                  dragging = true;
+                });
               });
-            });
 
-            let dragging = false;
-
-            scrolls?.forEach((scroll) => {
-              scroll.addEventListener('mousedown', () => {
-                dragging = true;
-              });
-            });
-
-            scrolls?.forEach((scroll) => {
-              scroll.addEventListener('mousemove', (e) => {
-                if (!dragging) return;
-                var dragBox = e.target.closest('ul');
-                dragBox.classList.add('dragging');
-                dragBox.scrollLeft -= e.movementX;
-              });
-            });
-
-            window.addEventListener('mouseup', () => {
-              dragging = false;
               scrolls?.forEach((scroll) => {
-                scroll.classList.remove('dragging');
+                scroll.addEventListener('mousemove', (e) => {
+                  if (!dragging) return;
+                  var dragBox = e.target.closest('ul');
+                  dragBox.classList.add('dragging');
+                  dragBox.scrollLeft -= e.movementX;
+                });
+              });
+
+              window.addEventListener('mouseup', () => {
+                dragging = false;
+                scrolls?.forEach((scroll) => {
+                  scroll.classList.remove('dragging');
+                });
               });
             });
 
@@ -6357,11 +6359,13 @@
           </script>
         </b:if>
         <b:if cond='data:view.isPost'>
-          <script>
-            function getRelatedPosts(feedData) {
-              const currentPostUrl = &quot;<data:blog.canonicalUrl/>&quot;;
+          <script type='module'>
+            /* <![CDATA[ */
+
+            function getRelatedPosts(feedData, current) {
+              const currentPostUrl = current;
               const maxResults = 4;
-              const containerTitle = &quot;Artikel Serupa&quot;;
+              const containerTitle = 'Artikel Serupa';
               const snippetLength = 160;
 
               let relatedTitles = [];
@@ -6377,20 +6381,20 @@
 
                 /* Try to get thumbnail, fallback to default */
                 try {
-                  thumbUrl = entry.media$thumbnail.url.replace(/\/s72[^\/]*\//g,&quot;/w232-h174-p-k-no-nu/&quot;);
+                  thumbUrl = entry.media$thumbnail.url.replace(/\/s72[^\/]*\//g,'/w232-h174-c/');
                 } catch {
-                  thumbUrl = &quot;&quot;;
+                  thumbUrl = '';
                 }
 
                 /* Truncate summary if too long */
-                if (summary.length &gt; snippetLength) {
-                  summary = summary.substring(0, snippetLength) + &quot;...&quot;;
+                if (summary.length > snippetLength) {
+                  summary = summary.substring(0, snippetLength) + '...';
                 }
 
-                /* Find the &quot;alternate&quot; link (the post URL) */
+                /* Find the "alternate" link (the post URL) */
                 let postUrl = null;
                 for (let link of entry.link) {
-                  if (link.rel === &quot;alternate&quot;) {
+                  if (link.rel === 'alternate') {
                     postUrl = link.href;
                     break;
                   }
@@ -6410,7 +6414,7 @@
               const uniqueTitles = [];
               const uniqueThumbs = [];
               const uniqueSnippets = [];
-              for (let i = 0; i &lt; relatedUrls.length; i++) {
+              for (let i = 0; i < relatedUrls.length; i++) {
                 if (!uniqueUrls.includes(relatedUrls[i])) {
                   uniqueUrls.push(relatedUrls[i]);
                   uniqueTitles.push(relatedTitles[i]);
@@ -6424,7 +6428,7 @@
               snippets = uniqueSnippets;
 
               /* Remove current post and any empty titles */
-              for (let i = 0; i &lt; relatedUrls.length; i++) {
+              for (let i = 0; i < relatedUrls.length; i++) {
                 if (relatedUrls[i] === currentPostUrl || !relatedTitles[i]) {
                   relatedUrls.splice(i, 1);
                   relatedTitles.splice(i, 1);
@@ -6435,74 +6439,74 @@
               }
 
               /* Render related posts */
-              const container = document.getElementById(&quot;related-posts&quot;);
+              const container = document.getElementById('related-posts');
               if (!container) return;
               if(!relatedTitles.length) return;
 
-              const titleElem = document.createElement(&quot;h2&quot;);
-              titleElem.id = &quot;related-posts-header&quot;;
-              titleElem.className = &quot;title&quot;;
+              const titleElem = document.createElement('h2');
+              titleElem.id = 'related-posts-header';
+              titleElem.className = 'title';
               titleElem.appendChild(document.createTextNode(containerTitle));
 
-              const listElem = document.createElement(&quot;div&quot;);
-              listElem.id = &quot;related-posts&quot;;
+              const listElem = document.createElement('div');
+              listElem.id = 'related-posts';
 
               /* Shuffle start index for randomness */
               let startIdx = Math.floor(Math.random() * relatedTitles.length);
 
-              for (let i = 0, count = 0; count &lt; maxResults &amp;&amp; count &lt; relatedTitles.length; count++) {
+              for (let i = 0, count = 0; count < maxResults && count < relatedTitles.length; count++) {
                 const idx = (startIdx + count) % relatedTitles.length;
                 const url = relatedUrls[idx];
                 const title = relatedTitles[idx];
                 const thumb = thumbUrls[idx];
                 const snippet = snippets[idx];
 
-                const svg = document.createElementNS(&quot;http://www.w3.org/2000/svg&quot;, &quot;svg&quot;);
-                svg.setAttribute(&quot;viewBox&quot;, &quot;0 0 24 24&quot;);
-                svg.setAttribute(&quot;aria-hidden&quot;, &quot;true&quot;);
+                const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+                svg.setAttribute('viewBox', '0 0 24 24');
+                svg.setAttribute('aria-hidden', true);
 
-                const path1 = document.createElementNS(&quot;http://www.w3.org/2000/svg&quot;, &quot;path&quot;);
-                const path2 = document.createElementNS(&quot;http://www.w3.org/2000/svg&quot;, &quot;path&quot;);
+                const path1 = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+                const path2 = document.createElementNS('http://www.w3.org/2000/svg', 'path');
 
-                path1.setAttribute(&quot;d&quot;, &quot;M0 0h24v24H0z&quot;);
-                path1.setAttribute(&quot;fill&quot;, &quot;none&quot;);
-                path2.setAttribute(&quot;d&quot;, &quot;M12 4l-1.41 1.41L16.17 11H4v2h12.17l-5.58 5.59L12 20l8-8z&quot;);
+                path1.setAttribute('d', 'M0 0h24v24H0z');
+                path1.setAttribute('fill', 'none');
+                path2.setAttribute('d', 'M12 4l-1.41 1.41L16.17 11H4v2h12.17l-5.58 5.59L12 20l8-8z');
 
                 svg.appendChild(path1);
                 svg.appendChild(path2);
 
-                const a = document.createElement(&quot;a&quot;);
-                a.className = &quot;item-url&quot;;
+                const a = document.createElement('a');
+                a.className = 'item-url';
                 a.href = url;
                 a.title = title;
                 a.appendChild(svg);
 
-                const titleP = document.createElement(&quot;div&quot;);
-                titleP.className = &quot;item-title&quot;;
+                const titleP = document.createElement('div');
+                titleP.className = 'item-title';
                 titleP.appendChild(document.createTextNode(title));
 
-                const snippetP = document.createElement(&quot;div&quot;);
-                snippetP.className = &quot;item-snippet&quot;;
+                const snippetP = document.createElement('div');
+                snippetP.className = 'item-snippet';
                 snippetP.appendChild(document.createTextNode(snippet));
 
-                const itemP = document.createElement(&quot;div&quot;);
-                itemP.className = &quot;item&quot;;
-                const contentP = document.createElement(&quot;div&quot;);
-                contentP.className = &quot;content&quot;;
+                const itemP = document.createElement('div');
+                itemP.className = 'item';
+                const contentP = document.createElement('div');
+                contentP.className = 'content';
                 contentP.appendChild(titleP);
                 contentP.appendChild(snippetP);
                 itemP.appendChild(contentP);
                 itemP.appendChild(a);
 
-                const li = document.createElement(&quot;div&quot;);
-                li.className = &quot;card&quot;;
+                const li = document.createElement('div');
+                li.className = 'card';
 
-                if (thumb !== &quot;&quot;) {
-                  const img = document.createElement(&quot;img&quot;);
+                if (thumb !== '') {
+                  const img = document.createElement('img');
                   img.alt = title;
                   img.title = title;
                   img.src = thumb;
-                  img.loading = &quot;lazy&quot;;
+                  img.loading = 'lazy';
 
                   li.appendChild(img);
                 }
@@ -6512,7 +6516,7 @@
               }
 
               container.replaceWith(titleElem);
-              const refNode = document.getElementById(&quot;related-posts-header&quot;);
+              const refNode = document.getElementById('related-posts-header');
               refNode.parentNode.insertBefore(listElem, refNode.nextSibling);
 
               /* Clear arrays for next use */
@@ -6524,41 +6528,44 @@
 
             function getNextPrevTitle(url, node) {
               var xhr = new XMLHttpRequest();
-              xhr.open(&quot;GET&quot;, url, true);
-              xhr.responseType = &quot;document&quot;;
+              xhr.open('GET', url, true);
+              xhr.responseType = 'document';
 
               xhr.onload = function() {
-                if (this.readyState == 4 &amp;&amp; this.status == 200) {
+                if (this.readyState == 4 && this.status == 200) {
                   var respDocument = this.responseXML;
-                  var title = respDocument.querySelector(&quot;article h1&quot;).textContent;
-                  var span = document.createElement(&quot;span&quot;);
-                  span.className = &quot;pagination-title&quot;;
+                  var title = respDocument.querySelector('article h1').textContent;
+                  var span = document.createElement('span');
+                  span.className = 'pagination-title';
                   span.appendChild(document.createTextNode(title));
                   node.appendChild(span);
                 }
               };
 
               xhr.onerror = function() {
-                  console.error(&quot;AJAX request failed.&quot;);
+                  console.error('AJAX request failed.');
               };
 
               xhr.send();
             }
 
-            !(function () {
-                var prevButton = document.querySelector(&quot;a.prev-page.single&quot;);
-                var nextButton = document.querySelector(&quot;a.next-page.single&quot;);
+            window.addEventListener('DOMContentLoaded', () => {
+              !(function () {
+                var prevButton = document.querySelector('a.prev-page.single');
+                var nextButton = document.querySelector('a.next-page.single');
                 if (prevButton) getNextPrevTitle(prevButton.href, prevButton);
                 if (nextButton) getNextPrevTitle(nextButton.href, nextButton);
-            })();
+              })();
 
-            !(function () {
-                var source = document.getElementById(&quot;related-posts&quot;).getAttribute(&quot;data-source&quot;);
-                var script = document.createElement(&quot;script&quot;);
-                script.src = source;
-                script.defer = true;
-                document.getElementsByTagName(&quot;head&quot;)[0].appendChild(script);
-            })();
+              !(function () {
+                var relpost = document.getElementById('related-posts');
+                fetch(relpost.dataset.source)
+                  .then(response => {if (response.ok) {return response.json()}})
+                  .then(data => {getRelatedPosts(data, relpost.dataset.url)});
+              })();
+            });
+            
+            /* ]]> */
           </script>
         </b:if>
         <script crossorigin='anonymous' defer='defer' expr:src='&quot;https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=&quot; + data:blog.adsenseClientId + &quot;&amp;host=&quot; + data:blog.adsenseHostId'/>
