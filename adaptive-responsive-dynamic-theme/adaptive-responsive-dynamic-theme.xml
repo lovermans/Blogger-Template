@@ -1235,25 +1235,6 @@
               .title-header {
                 opacity: 0.6;
               }
-
-              .scroll-control {
-                flex-shrink: 0;
-                display: flex;
-                gap: 1rem;
-                margin-left: auto;
-                margin-right: 0.5rem;
-
-                .card {
-                  padding: 0.5rem;
-                  border-radius: 50%;
-                  border: var(--divider-border);
-                  opacity: 0.6;
-
-                  &.active {
-                    opacity: 1;
-                  }
-                }
-              }
             }
           }
 
@@ -1883,9 +1864,16 @@
               overflow-x: auto;
               scrollbar-width: none;
               scroll-behavior: smooth;
+              scroll-snap-type: x mandatory;
+
+              li {
+                scroll-snap-align: start;
+              }
 
               &.dragging {
                 scroll-behavior: auto;
+                scroll-snap-type: none;
+
                 a, img {
                   pointer-events: none;
                 }
@@ -1896,6 +1884,39 @@
           .PopularPosts {
             ul {
               gap: 1rem;
+              anchor-name: --popular;
+
+              &::scroll-button(right), &::scroll-button(left) {
+                position: fixed;
+                position-anchor: --popular;
+                position-area: top right;
+                cursor: pointer;
+                font-size: 1rem;
+                width: 2.5rem;
+                border-radius: 50%;
+                height: 2.5rem;
+                border: none;
+                margin-bottom: 0.5rem;
+                padding-bottom: 0.1em;
+                background: var(--elev-basic-bg-1);
+                box-shadow: var(--elev-shadow-1);
+                border: var(--divider-border);
+              }
+
+              &::scroll-button(right) {
+                translate: -3rem;
+                content: '\276F';
+              }
+
+              &::scroll-button(left) {
+                translate: -6.25rem;
+                content: '\276E';
+              }
+
+              &::scroll-button(right):is(:hover, :focus), &::scroll-button(left):is(:hover, :focus) {
+                background: var(--elev-basic-bg-8);
+                box-shadow: var(--elev-shadow-8);
+              }
 
               &>* {
                 flex: 1 0 80%;
@@ -2009,17 +2030,27 @@
               overflow-x: hidden;
             }
 
-            button {
-              position: absolute;
-              top: 0;
-              line-height: 2.5rem;
-              display: none;
+            ul {
+              gap: 1rem 0.5rem;
+              padding: 0.5rem 1rem;
 
-              &.forward {
+              &::scroll-button(right), &::scroll-button(left) {
+                position: absolute;
+                top: 0.25rem;
+                cursor: pointer;
+                font-size: 1rem;
+                width: 3rem;
+                height: 3rem;
+                border: none;
+                padding-bottom: 0.1em;
+              }
+
+              &::scroll-button(right) {
                 right: 0;
+                content: '\276F';
+                padding: 0 0 0 1rem;
                 background: linear-gradient(to left, var(--bg-label) 50%, transparent);
-                padding: 0.5rem 0.5rem 0.5rem 1.5rem;
-
+                
                 &:hover {
                   background: linear-gradient(to left, var(--bg-label) 35%, transparent);
                 }
@@ -2029,9 +2060,10 @@
                 }
               }
 
-              &.back {
+              &::scroll-button(left) {
+                content: '\276E';
+                padding: 0 1rem 0 0;
                 background: linear-gradient(to right, var(--bg-label) 50%, transparent);
-                padding: 0.5rem 1.5rem 0.5rem 0.5rem;
 
                 &:hover {
                   background: linear-gradient(to right, var(--bg-label) 35%, transparent);
@@ -2042,14 +2074,9 @@
                 }
               }
 
-              &.active {
-                display: block;
+              &::scroll-button(right):disabled, &::scroll-button(left):disabled {
+                display: none;
               }
-            }
-
-            ul {
-              gap: 1rem 0.5rem;
-              padding: 0.5rem 1rem;
 
               li {
                 flex-shrink: 0;
@@ -3439,7 +3466,7 @@
             --bg-label: var(--surface);
           }
 
-          .Label .widget-content {
+          .scrollable-tabs .widget-content {
             position: relative;
             overflow-x: hidden;
           }
@@ -3451,6 +3478,7 @@
 
           .Label li {
             flex-shrink: 0;
+            scroll-snap-align: start;
           }
 
           .Label a {
@@ -3509,6 +3537,51 @@
             overflow-x: auto;
             scrollbar-width: none;
             scroll-behavior: smooth;
+            scroll-snap-type: x mandatory;
+          }
+
+          .Label ul::scroll-button(right), .Label ul::scroll-button(left) {
+            position: absolute;
+            top: 0.25rem;
+            cursor: pointer;
+            font-size: 1rem;
+            width: 3rem;
+            height: 3rem;
+            border: none;
+            padding-bottom: 0.1em;
+          }
+
+          .Label ul::scroll-button(right) {
+            right: 0;
+            content: '\276F';
+            padding: 0 0 0 1rem;
+            background: linear-gradient(to left, var(--bg-label) 50%, transparent);
+          }
+
+          .Label ul::scroll-button(right):hover {
+            background: linear-gradient(to left, var(--bg-label) 35%, transparent);
+          }
+
+          .Label ul::scroll-button(right):focus {
+            background: linear-gradient(to left, var(--bg-label) 25%, transparent);
+          }
+
+          .Label ul::scroll-button(left) {
+            content: '\276E';
+            padding: 0 1rem 0 0;
+            background: linear-gradient(to right, var(--bg-label) 50%, transparent);
+          }
+
+          .Label ul::scroll-button(left):hover {
+            background: linear-gradient(to right, var(--bg-label) 35%, transparent);
+          }
+
+          .Label ul::scroll-button(left):focus {
+            background: linear-gradient(to right, var(--bg-label) 25%, transparent);
+          }
+
+          .Label ul::scroll-button(right):disabled, .Label ul::scroll-button(left):disabled {
+            display: none;
           }
 
           .Blog, .Blog #main {
@@ -4064,11 +4137,44 @@
 
           .PopularPosts ul {
             gap: 1rem;
+            anchor-name: --popular;
+          }
+
+          .PopularPosts ul::scroll-button(right), .PopularPosts ul::scroll-button(left) {
+            position: fixed;
+            position-anchor: --popular;
+            position-area: top right;
+            cursor: pointer;
+            font-size: 1rem;
+            width: 2.5rem;
+            border-radius: 50%;
+            height: 2.5rem;
+            margin-bottom: 0.5rem;
+            padding-bottom: 0.1em;
+            background: var(--elev-basic-bg-1);
+            box-shadow: var(--elev-shadow-1);
+            border: var(--divider-border);
+          }
+
+          .PopularPosts ul::scroll-button(right):is(:hover, :focus), .PopularPosts ul::scroll-button(left):is(:hover, :focus) {
+            background: var(--elev-basic-bg-8);
+            box-shadow: var(--elev-shadow-8);
+          }
+
+          .PopularPosts ul::scroll-button(right) {
+            translate: -3rem;
+            content: '\276F';
+          }
+
+          .PopularPosts ul::scroll-button(left) {
+            translate: -6.25rem;
+            content: '\276E';
           }
 
           .PopularPosts ul .card {
             display: flex;
             flex-wrap: wrap;
+            scroll-snap-align: start;
           }
 
           .PopularPosts ul>* {
@@ -4363,10 +4469,6 @@
               top: 4rem;
             }
 
-            :is(.PopularPosts, .Label) ul {
-              scrollbar-width: auto;
-            }
-
             .Label {
               top: 0;
               margin: 0 0 1rem;
@@ -4571,14 +4673,6 @@
               </div>
             </b:includable>
             <b:includable id='list'>
-              <b:if cond='data:view.url != data:view.url params {amp: &quot;1&quot;} or not (data:view.isMultipleItems or data:view.isPost)'>
-                <button class='back' title='Geser ke Kiri'>
-                  <svg aria-hidden='true' viewBox='0 0 24 24'>
-                    <path d='M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z'/>
-                    <path d='M0 0h24v24H0z' fill='none'/>
-                  </svg>
-                </button>
-              </b:if>
               <ul>
                 <b:loop values='data:labels' var='label'>
                   <li>
@@ -4594,14 +4688,6 @@
                   </li>
                 </b:loop>
               </ul>
-              <b:if cond='data:view.url != data:view.url params {amp: &quot;1&quot;} or not (data:view.isMultipleItems or data:view.isPost)'>
-                <button class='forward' title='Geser ke Kanan'>
-                  <svg aria-hidden='true' viewBox='0 0 24 24'>
-                    <path d='M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z'/>
-                    <path d='M0 0h24v24H0z' fill='none'/>
-                  </svg>
-                </button>
-              </b:if>
             </b:includable>
           </b:widget>
           <b:widget id='Blog1' locked='true' title='Postingan Blog' type='Blog' version='2' visible='true'>
@@ -5598,22 +5684,6 @@
               <b:class name='scrollable-tabs'/>
               <div class='header'>
                 <h3 class='title-header'><data:title/></h3>
-                <b:if cond='data:view.url != data:view.url params {amp: &quot;1&quot;} or not (data:view.isMultipleItems or data:view.isPost)'>
-                  <div class='scroll-control'>
-                    <button class='card back' title='Geser ke Kiri'>
-                      <svg aria-hidden='true' viewBox='0 0 24 24'>
-                        <path d='M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z'/>
-                        <path d='M0 0h24v24H0z' fill='none'/>
-                      </svg>
-                    </button>
-                    <button class='card forward' title='Geser ke Kanan'>
-                      <svg aria-hidden='true' viewBox='0 0 24 24'>
-                        <path d='M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z'/>
-                        <path d='M0 0h24v24H0z' fill='none'/>
-                      </svg>
-                    </button>
-                  </div>
-                </b:if>
               </div>
               
               <div class='widget-content'>
@@ -6282,57 +6352,8 @@
             /* <![CDATA[ */
 
             const scrolls = document.querySelectorAll('.scrollable-tabs ul');
-            const scrollBacks = document.querySelectorAll('.scrollable-tabs .back');
-            const scrollForwards = document.querySelectorAll('.scrollable-tabs .forward');
-
-            function scrollControl(e) {
-              let scrollBox = e.target;
-              let scrollLeftValue = Math.ceil(scrollBox.scrollLeft);
-              let scrollableWidth = scrollBox.scrollWidth - scrollBox.clientWidth;
-              let backButton = scrollBox.closest('.scrollable-tabs').querySelector('button.back');
-              let forwardButton = scrollBox.closest('.scrollable-tabs').querySelector('button.forward');
-
-              scrollLeftValue > 0 ? backButton.classList.add('active') : backButton.classList.remove('active');
-              scrollableWidth > scrollLeftValue ? forwardButton.classList.add('active') : forwardButton.classList.remove('active');
-            };
 
             window.addEventListener('DOMContentLoaded', () => {
-              scrollBacks?.forEach((back) => {
-                back.addEventListener('click', (e) => {
-                  e.target.closest('.scrollable-tabs').querySelector('ul').scrollLeft -= 200;
-                });
-              });
-
-              scrollForwards?.forEach((forward) => {
-                forward.addEventListener('click', (e) => {
-                  e.target.closest('.scrollable-tabs').querySelector('ul').scrollLeft += 200;
-                });
-              });
-
-              scrolls?.forEach((scroll) => {scroll.addEventListener('scroll', scrollControl)});
-
-              scrolls?.forEach((scroll) => {
-                let backButton = scroll.closest('.scrollable-tabs').querySelector('button.back');
-                let forwardButton = scroll.closest('.scrollable-tabs').querySelector('button.forward');
-
-                scroll.scrollWidth > scroll.clientWidth || scroll.scrollWidth >= window.innerWidth ? forwardButton.classList.add('active') : forwardButton.classList.remove('active');
-                if (window.innerWidth >= scroll.scrollWidth) {backButton.classList.remove('active');}; 
-              });
-
-              window.addEventListener('resize', () => {
-                scrolls?.forEach((scroll) => {
-                  let backButton = scroll.closest('.scrollable-tabs').querySelector('button.back');
-                  let forwardButton = scroll.closest('.scrollable-tabs').querySelector('button.forward');
-
-                  scroll.scrollWidth > scroll.clientWidth || scroll.scrollWidth >= window.innerWidth ? forwardButton.classList.add('active') : forwardButton.classList.remove('active');
-                  if (window.innerWidth >= scroll.scrollWidth) {backButton.classList.remove('active');};
-
-                  let scrollLeftValue = Math.round(scroll.scrollLeft);
-
-                  scrollLeftValue > 0 ? backButton.classList.add('active') : backButton.classList.remove('active');
-                });
-              });
-
               let dragging = false;
 
               scrolls?.forEach((scroll) => {
