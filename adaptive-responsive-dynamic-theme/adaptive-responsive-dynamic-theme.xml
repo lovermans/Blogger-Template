@@ -2721,13 +2721,13 @@
           });
 
           window.matchMedia('(prefers-contrast: more)').addEventListener('change', ({ matches: isMore }) => {
-              preference.theme = isMore ? 'more' : 'no-preference';
+              preference.contrast = isMore ? 'more' : 'no-preference';
 
               setContrastPreference();
           });
 
           window.matchMedia('(prefers-contrast: less)').addEventListener('change', ({ matches: isLess }) => {
-              preference.theme = isLess ? 'less' : 'no-preference';
+              preference.contrast = isLess ? 'less' : 'no-preference';
 
               setContrastPreference();
           });
@@ -6614,3 +6614,4 @@
   </b:with>
   </b:with>
 </html>
+
