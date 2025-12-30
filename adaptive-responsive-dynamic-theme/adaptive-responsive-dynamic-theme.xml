@@ -1304,6 +1304,7 @@
                 display: grid;
                 grid-template-rows: subgrid;
                 grid-row: span 6;
+                padding: 1rem 0;
 
                 h2 {
                   font: var(--font-h6);
@@ -3621,6 +3622,12 @@
             border: var(--divider-border);
           }
 
+          .thumbnail {
+            width: 100%;
+            border: var(--divider-border);
+            aspect-ratio: 16/9;
+          }
+
           .card:is(:hover, :focus, :focus-within) {
             background: var(--elev-basic-bg-8);
             box-shadow: var(--elev-shadow-8);
@@ -3640,6 +3647,7 @@
             display: grid;
             grid-template-rows: subgrid;
             grid-row: span 6;
+            padding: 1rem 0;
           }
 
           .multiple .card h2 {
