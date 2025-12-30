@@ -1296,19 +1296,14 @@
             }
 
             .multiple {
-              display: flex;
-              flex-wrap: wrap;
+              display: grid;
               gap: 1rem;
-
-              &>* {
-                flex: 1 20rem;
-              }
+              grid-template-columns: repeat(auto-fit, minmax(min(20rem, 100%), 1fr));
 
               .card {
-                display: flex;
-                flex-direction: column;
-                gap: 1rem;
-                padding: 1rem 0;
+                display: grid;
+                grid-template-rows: subgrid;
+                grid-row: span 6;
 
                 h2 {
                   font: var(--font-h6);
@@ -3636,16 +3631,15 @@
           }
 
           .Blog .multiple {
-            display: flex;
-            flex-wrap: wrap;
+            display: grid;
             gap: 1rem;
+            grid-template-columns: repeat(auto-fit, minmax(min(20rem, 100%), 1fr));
           }
 
           .multiple .card {
-            display: flex;
-            flex-direction: column;
-            gap: 1rem;
-            padding: 1rem 0;
+            display: grid;
+            grid-template-rows: subgrid;
+            grid-row: span 6;
           }
 
           .multiple .card h2 {
@@ -3661,10 +3655,6 @@
 
           .multiple .card .action a {
             width: 100%;
-          }
-
-          .multiple >* {
-            flex: 1 20rem;
           }
 
           .multiple .card>*:not(.thumbnail) {
