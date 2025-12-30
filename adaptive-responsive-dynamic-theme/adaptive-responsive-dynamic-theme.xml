@@ -2437,6 +2437,7 @@
             #main-content {
               width: calc(100% - var(--right-sidebar-max-width));
               margin-top: -3.5rem;
+			  flex-direction: row-reverse;
             }
 
             .Blog {
@@ -2475,11 +2476,12 @@
             #main-content {
               #content {
                 flex: 1 48rem;
+				margin-right: 2rem;
               }
 
               #sidebar {
-                margin-top: 1rem;
-                margin-right: 2rem;
+                margin-top: 0;
+				padding-top: 1rem;
                 max-width: none;
               }
             }
@@ -4453,6 +4455,7 @@
             #main-content {
               width: calc(100% - var(--right-sidebar-max-width));
               margin-top: -3.5rem;
+			  flex-direction: row-reverse;
             }
 
             .Blog #top-alert {
@@ -4486,11 +4489,12 @@
           @media screen and (min-width: 94rem) {
             #main-content #content {
               flex: 1 48rem;
+			  margin-right: 2rem;
             }
 
             #main-content #sidebar {
-              margin-top: 1rem;
-              margin-right: 2rem;
+              margin-top: 0;
+			  padding-top: 1rem;
               max-width: none;
             }
           }
@@ -6614,4 +6618,3 @@
   </b:with>
   </b:with>
 </html>
-
