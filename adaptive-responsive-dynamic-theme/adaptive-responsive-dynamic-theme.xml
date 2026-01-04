@@ -833,6 +833,10 @@
             }
           }
 
+          ul.dragging {
+            cursor: grabbing;
+          }
+
           /* Skip Navigation Link Style */
 
           a.skip-navigation {
@@ -6357,25 +6361,28 @@
               let dragging = false;
 
               scrolls?.forEach((scroll) => {
-                scroll.addEventListener('mousedown', () => {
-                  dragging = true;
+                scroll.addEventListener('mousedown', (e) => {
+                  setTimeout(() => {
+                    dragging = true;
+                  }, 200);
                 });
               });
 
               scrolls?.forEach((scroll) => {
                 scroll.addEventListener('mousemove', (e) => {
                   if (!dragging) return;
-                  var dragBox = e.target.closest('ul');
-                  dragBox.classList.add('dragging');
-                  dragBox.scrollLeft -= e.movementX;
+                  e.currentTarget.classList.add('dragging');
+                  e.currentTarget.scrollLeft -= e.movementX;
                 });
               });
 
               window.addEventListener('mouseup', () => {
-                dragging = false;
-                scrolls?.forEach((scroll) => {
-                  scroll.classList.remove('dragging');
-                });
+                setTimeout(() => {
+                  dragging = false;
+                  scrolls?.forEach((scroll) => {
+                    scroll.classList.remove('dragging');
+                  });
+                }, 200);
               });
             });
 
