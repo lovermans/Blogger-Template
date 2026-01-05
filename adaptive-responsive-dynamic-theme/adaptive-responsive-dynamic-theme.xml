@@ -833,10 +833,6 @@
             }
           }
 
-          ul.dragging {
-            cursor: grabbing;
-          }
-
           /* Skip Navigation Link Style */
 
           a.skip-navigation {
@@ -1228,6 +1224,7 @@
           }
 
           .scrollable-tabs {
+            overflow: hidden;
             .header {
               display: flex;
               justify-content: space-between;
@@ -1873,9 +1870,11 @@
               &.dragging {
                 scroll-behavior: auto;
                 scroll-snap-type: none;
+                cursor: grabbing;
 
-                a, img {
+                * {
                   pointer-events: none;
+                  user-select: none;
                 }
               }
             }
@@ -6355,34 +6354,31 @@
           <script type='module'>
             /* <![CDATA[ */
 
-            const scrolls = document.querySelectorAll('.scrollable-tabs ul');
+            document.addEventListener('DOMContentLoaded', () => {
+              const scrolls = document.querySelectorAll('.scrollable-tabs ul');
 
-            window.addEventListener('DOMContentLoaded', () => {
-              let dragging = false;
+              scrolls?.forEach((slider) => {
+                let isDown = false;;
 
-              scrolls?.forEach((scroll) => {
-                scroll.addEventListener('mousedown', (e) => {
-                  setTimeout(() => {
-                    dragging = true;
-                  }, 200);
+                slider.addEventListener('mousedown', (e) => {
+                  isDown = true;
                 });
-              });
 
-              scrolls?.forEach((scroll) => {
-                scroll.addEventListener('mousemove', (e) => {
-                  if (!dragging) return;
-                  e.currentTarget.classList.add('dragging');
-                  e.currentTarget.scrollLeft -= e.movementX;
+                slider.addEventListener('mouseleave', () => {
+                  isDown = false;
+                  slider.classList.remove('dragging');
                 });
-              });
 
-              window.addEventListener('mouseup', () => {
-                setTimeout(() => {
-                  dragging = false;
-                  scrolls?.forEach((scroll) => {
-                    scroll.classList.remove('dragging');
-                  });
-                }, 200);
+                window.addEventListener('mouseup', () => {
+                  isDown = false;
+                  slider.classList.remove('dragging');
+                });
+
+                slider.addEventListener('mousemove', (e) => {
+                  if (!isDown) return;
+                  slider.classList.add('dragging');
+                  slider.scrollLeft -= e.movementX;
+                });
               });
             });
 
