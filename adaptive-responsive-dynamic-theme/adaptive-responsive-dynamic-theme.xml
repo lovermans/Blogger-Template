@@ -4894,7 +4894,9 @@
               
               <b:loop index='x' values='data:posts' var='post'>
                 <b:if cond='data:view.isPost'>
-                  <b:tag cond='data:view.url != data:view.url params {amp: &quot;1&quot;} or not (data:view.isMultipleItems or data:view.isPost)' expr:data-source='data:blog.canonicalHomepageUrl + &quot;feeds/posts/summary/-/&quot; + data:post.labels.first.name + &quot;?alt=json&amp;max-results=8&quot;' expr:data-url='data:blog.canonicalUrl' id='related-posts' name='div'/>
+                  <b:tag cond='data:view.url != data:view.url params {amp: &quot;1&quot;} or not (data:view.isMultipleItems or data:view.isPost)' expr:data-source='data:blog.canonicalHomepageUrl + &quot;feeds/posts/summary/-/&quot; + data:post.labels.first.name + &quot;?alt=json&amp;max-results=8&quot;' expr:data-url='data:blog.canonicalUrl' id='related-posts' name='div'>
+                    <p>Memuat konten.</p>
+                  </b:tag>
                   
                   <b:if cond='data:post.allowComments'>
                     <b:with value='data:comment-avatar ?: &quot;https://1.bp.blogspot.com/-XBvpDLx2IL4/AAAAAAAAAAI/AAAAAAAAAS8/yNvDEYNszDk/s40/photo.jpg&quot;' var='comment-avatar'>
@@ -6411,208 +6413,142 @@
           <script type='module'>
             /* <![CDATA[ */
 
-            function getRelatedPosts(feedData, current) {
-              const currentPostUrl = current;
-              const maxResults = 4;
-              const containerTitle = 'Artikel Serupa';
-              const snippetLength = 160;
+            const renderRelatedPosts = (feedData, currentPostUrl, container) => {
+              const MAX_RESULTS = 4;
+              const SNIPPET_LENGTH = 160;
+              const CONTAINER_TITLE = 'Artikel Serupa';
 
-              let relatedTitles = [];
-              let relatedUrls = [];
-              let thumbUrls = [];
-              let snippets = [];
+              if (!feedData?.feed?.entry) return;
 
-              /* Extract post data from feed */
-              for (let entry of feedData.feed.entry) {
-                let title = entry.title.$t;
-                let summary = entry.summary.$t;
-                let thumbUrl;
+              let posts = feedData.feed.entry.map(entry => {
+                const postUrl = entry.link.find(l => l.rel === 'alternate')?.href;
+                const thumbUrl = entry.media$thumbnail?.url.replace(/\/s72[^\/]*\//g, '/w232-h174-c/') || '';
+                const rawSummary = entry.summary?.$t || entry.content?.$t || '';
+                const cleanSummary = rawSummary.replace(/<[^>]*>?/gm, '');
 
-                /* Try to get thumbnail, fallback to default */
-                try {
-                  thumbUrl = entry.media$thumbnail.url.replace(/\/s72[^\/]*\//g,'/w232-h174-c/');
-                } catch {
-                  thumbUrl = '';
-                }
+                return {
+                  title: entry.title.$t,
+                  summary: cleanSummary.substring(0, SNIPPET_LENGTH) + (cleanSummary.length > SNIPPET_LENGTH ? '...' : ''),
+                  url: postUrl,
+                  thumb: thumbUrl
+                };
+              });
 
-                /* Truncate summary if too long */
-                if (summary.length > snippetLength) {
-                  summary = summary.substring(0, snippetLength) + '...';
-                }
+              posts = posts.filter((post, index, self) => 
+                post.url && 
+                post.url !== currentPostUrl && 
+                self.findIndex(p => p.url === post.url) === index
+              );
 
-                /* Find the "alternate" link (the post URL) */
-                let postUrl = null;
-                for (let link of entry.link) {
-                  if (link.rel === 'alternate') {
-                    postUrl = link.href;
-                    break;
-                  }
-                }
-
-                /* Only add if we found a post URL */
-                if (postUrl) {
-                  relatedTitles.push(title);
-                  relatedUrls.push(postUrl);
-                  thumbUrls.push(thumbUrl);
-                  snippets.push(summary);
-                }
+              if (posts.length === 0) {
+                container.remove();
+                return;
               }
 
-              /* Remove duplicates */
-              const uniqueUrls = [];
-              const uniqueTitles = [];
-              const uniqueThumbs = [];
-              const uniqueSnippets = [];
-              for (let i = 0; i < relatedUrls.length; i++) {
-                if (!uniqueUrls.includes(relatedUrls[i])) {
-                  uniqueUrls.push(relatedUrls[i]);
-                  uniqueTitles.push(relatedTitles[i]);
-                  uniqueThumbs.push(thumbUrls[i]);
-                  uniqueSnippets.push(snippets[i]);
-                }
-              }
-              relatedUrls = uniqueUrls;
-              relatedTitles = uniqueTitles;
-              thumbUrls = uniqueThumbs;
-              snippets = uniqueSnippets;
+              posts.sort(() => Math.random() - 0.5);
+              const selectedPosts = posts.slice(0, MAX_RESULTS);
 
-              /* Remove current post and any empty titles */
-              for (let i = 0; i < relatedUrls.length; i++) {
-                if (relatedUrls[i] === currentPostUrl || !relatedTitles[i]) {
-                  relatedUrls.splice(i, 1);
-                  relatedTitles.splice(i, 1);
-                  thumbUrls.splice(i, 1);
-                  snippets.splice(i, 1);
-                  i--;
-                }
-              }
+              const fragment = document.createDocumentFragment();
 
-              /* Render related posts */
-              const container = document.getElementById('related-posts');
-              if (!container) return;
-              if(!relatedTitles.length) return;
+              const header = document.createElement('h2');
+              header.id = 'related-posts-title';
+              header.className = 'title';
+              header.textContent = CONTAINER_TITLE;
+              fragment.appendChild(header);
 
-              const titleElem = document.createElement('h2');
-              titleElem.id = 'related-posts-header';
-              titleElem.className = 'title';
-              titleElem.appendChild(document.createTextNode(containerTitle));
+              const listWrapper = document.createElement('div');
+              listWrapper.id = 'related-posts';
 
-              const listElem = document.createElement('div');
-              listElem.id = 'related-posts';
+              selectedPosts.forEach(post => {
+                const card = document.createElement('div');
+                card.className = 'card';
+                card.innerHTML = `
+                  ${post.thumb ? `<img src="${post.thumb}" alt="${post.title}" title="${post.title}" loading="lazy">` : ''}
+                  <div class="item">
+                    <div class="content">
+                      <div class="item-title">${post.title}</div>
+                      <div class="item-snippet">${post.summary}</div>
+                    </div>
+                    <a class="item-url" href="${post.url}" title="${post.title}">
+                      <svg viewBox="0 0 24 24" aria-hidden="true">
+                        <path d="M0 0h24v24H0z" fill="none"/>
+                        <path d="M12 4l-1.41 1.41L16.17 11H4v2h12.17l-5.58 5.59L12 20l8-8z"/>
+                      </svg>
+                    </a>
+                  </div>
+                `;
+                listWrapper.appendChild(card);
+              });
 
-              /* Shuffle start index for randomness */
-              let startIdx = Math.floor(Math.random() * relatedTitles.length);
-
-              for (let i = 0, count = 0; count < maxResults && count < relatedTitles.length; count++) {
-                const idx = (startIdx + count) % relatedTitles.length;
-                const url = relatedUrls[idx];
-                const title = relatedTitles[idx];
-                const thumb = thumbUrls[idx];
-                const snippet = snippets[idx];
-
-                const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-                svg.setAttribute('viewBox', '0 0 24 24');
-                svg.setAttribute('aria-hidden', true);
-
-                const path1 = document.createElementNS('http://www.w3.org/2000/svg', 'path');
-                const path2 = document.createElementNS('http://www.w3.org/2000/svg', 'path');
-
-                path1.setAttribute('d', 'M0 0h24v24H0z');
-                path1.setAttribute('fill', 'none');
-                path2.setAttribute('d', 'M12 4l-1.41 1.41L16.17 11H4v2h12.17l-5.58 5.59L12 20l8-8z');
-
-                svg.appendChild(path1);
-                svg.appendChild(path2);
-
-                const a = document.createElement('a');
-                a.className = 'item-url';
-                a.href = url;
-                a.title = title;
-                a.appendChild(svg);
-
-                const titleP = document.createElement('div');
-                titleP.className = 'item-title';
-                titleP.appendChild(document.createTextNode(title));
-
-                const snippetP = document.createElement('div');
-                snippetP.className = 'item-snippet';
-                snippetP.appendChild(document.createTextNode(snippet));
-
-                const itemP = document.createElement('div');
-                itemP.className = 'item';
-                const contentP = document.createElement('div');
-                contentP.className = 'content';
-                contentP.appendChild(titleP);
-                contentP.appendChild(snippetP);
-                itemP.appendChild(contentP);
-                itemP.appendChild(a);
-
-                const li = document.createElement('div');
-                li.className = 'card';
-
-                if (thumb !== '') {
-                  const img = document.createElement('img');
-                  img.alt = title;
-                  img.title = title;
-                  img.src = thumb;
-                  img.loading = 'lazy';
-
-                  li.appendChild(img);
-                }
-
-                li.appendChild(itemP);
-                listElem.appendChild(li);
-              }
-
-              container.replaceWith(titleElem);
-              const refNode = document.getElementById('related-posts-header');
-              refNode.parentNode.insertBefore(listElem, refNode.nextSibling);
-
-              /* Clear arrays for next use */
-              relatedTitles.length = 0;
-              relatedUrls.length = 0;
-              thumbUrls.length = 0;
-              snippets.length = 0;
+              fragment.appendChild(listWrapper);
+              container.replaceWith(fragment);
             };
 
-            function getNextPrevTitle(url, node) {
-              var xhr = new XMLHttpRequest();
-              xhr.open('GET', url, true);
-              xhr.responseType = 'document';
+            async function hydratePagination(url, node) {
+              try {
+                const response = await fetch(url);
+                if (!response.ok) return;
 
-              xhr.onload = function() {
-                if (this.readyState == 4 && this.status == 200) {
-                  var respDocument = this.responseXML;
-                  var title = respDocument.querySelector('article h1').textContent;
-                  var span = document.createElement('span');
+                const text = await response.text();
+                const doc = new DOMParser().parseFromString(text, 'text/html');
+                const title = doc.querySelector('h1.post-title, .entry-title, article h1')?.textContent;
+
+                if (title) {
+                  const span = document.createElement('span');
                   span.className = 'pagination-title';
-                  span.appendChild(document.createTextNode(title));
+                  span.textContent = title.trim();
                   node.appendChild(span);
                 }
-              };
-
-              xhr.onerror = function() {
-                  console.error('AJAX request failed.');
-              };
-
-              xhr.send();
+              } catch (err) {
+                console.warn('Gagal memuat judul navigasi:', err);
+              }
             }
 
-            window.addEventListener('DOMContentLoaded', () => {
-              !(function () {
-                var prevButton = document.querySelector('a.prev-page.single');
-                var nextButton = document.querySelector('a.next-page.single');
-                if (prevButton) getNextPrevTitle(prevButton.href, prevButton);
-                if (nextButton) getNextPrevTitle(nextButton.href, nextButton);
-              })();
+            const initIslands = () => {
+              // 1. Inisialisasi Related Posts (Lazy Load / Island)
+              const relpostContainer = document.getElementById('related-posts');
+              if (relpostContainer) {
+                const observer = new IntersectionObserver((entries) => {
+                  entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                      const source = relpostContainer.dataset.source;
+                      const currentUrl = relpostContainer.dataset.url;
 
-              !(function () {
-                var relpost = document.getElementById('related-posts');
-                fetch(relpost.dataset.source)
-                  .then(response => {if (response.ok) {return response.json()}})
-                  .then(data => {getRelatedPosts(data, relpost.dataset.url)});
-              })();
-            });
+                      if (source) {
+                        fetch(source)
+                          .then(res => res.ok ? res.json() : null)
+                          .then(data => data && renderRelatedPosts(data, currentUrl, relpostContainer))
+                          .catch(console.error);
+                      }
+                      observer.unobserve(relpostContainer);
+                    }
+                  });
+                }, { rootMargin: '150px' });
+
+                observer.observe(relpostContainer);
+              }
+
+              // 2. Inisialisasi Pagination Titles
+              const navLinks = document.querySelectorAll('a.prev-page.single, a.next-page.single');
+              if (navLinks.length > 0) {
+                const navObserver = new IntersectionObserver((entries) => {
+                  entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                      hydratePagination(entry.target.href, entry.target);
+                      navObserver.unobserve(entry.target);
+                    }
+                  });
+                }, { rootMargin: '100px' });
+
+                navLinks.forEach(link => navObserver.observe(link));
+              }
+            };
+
+            if (document.readyState === 'loading') {
+              document.addEventListener('DOMContentLoaded', initIslands);
+            } else {
+              initIslands();
+            }
             
             /* ]]> */
           </script>
